@@ -1,6 +1,16 @@
 import React, { useEffect } from 'react'
 import SplashScreen from 'react-native-splash-screen'
-import { View, Text } from 'react-native'
+import { Provider, DefaultTheme } from 'react-native-paper'
+import Navigator from './Navigator'
+
+const theme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: '#84bfff',
+        accent: '#ff89cb'
+    }
+}
 
 export default () => {
     useEffect(() => {
@@ -8,10 +18,8 @@ export default () => {
     }, [])
 
     return (
-        <View
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-            <Text>Hello from MeChat!</Text>
-        </View>
+        <Provider theme={theme}>
+            <Navigator />
+        </Provider>
     )
 }

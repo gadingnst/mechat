@@ -2958,6 +2958,11 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
+
 handlebars@^4.1.2:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.4.5.tgz#1b1f94f9bfe7379adda86a8b73fb570265a0dddd"
@@ -4119,7 +4124,7 @@ lodash.unescape@4.0.1:
   resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
   integrity sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=
 
-lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.5, lodash@^4.3.0:
+lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -5311,6 +5316,16 @@ react-native-dotenv@^0.2.0:
   dependencies:
     babel-plugin-dotenv "0.1.1"
 
+react-native-gesture-handler@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.4.1.tgz#c38d9e57637b95e221722a79f2bafac62e3aeb21"
+  integrity sha512-Ffcs+SbEbkGaal0CClYL+v7A9y4OA5G5lW01qrzjxaqASp5C8BfnWSKuqYKE00s6bLwE5L4xnlHkG0yIxAtbrQ==
+  dependencies:
+    hammerjs "^2.0.8"
+    hoist-non-react-statics "^2.3.1"
+    invariant "^2.2.4"
+    prop-types "^15.7.2"
+
 react-native-paper@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-3.0.0.tgz#b7d667dcb38f5e69552db140c398f50ea46ee98e"
@@ -5319,6 +5334,11 @@ react-native-paper@^3.0.0:
     "@callstack/react-theme-provider" "^3.0.5"
     color "^3.1.2"
     react-native-safe-area-view "^0.12.0"
+
+react-native-reanimated@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.3.0.tgz#581cdb0bd1ff05e7304b116af712ded0c7665ede"
+  integrity sha512-KFno6D0q09kx71IDuPa4qeC1t1msALsCMuli3/EN3YDf8XoM2CG53yzhVHMFtmcW0IUCySugHgxQiuT5BzwOPA==
 
 react-native-safe-area-view@^0.12.0:
   version "0.12.0"
@@ -5341,10 +5361,26 @@ react-native-safe-area-view@^0.14.1:
   dependencies:
     debounce "^1.2.0"
 
+react-native-screens@^2.0.0-alpha.6:
+  version "2.0.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.6.tgz#238cf7e97ff6008cca75dd1dd4a5a854bce81d57"
+  integrity sha512-5m59glvDDzQvzdBymIn6GfCnzk/9kaxkREEKLVMdANtZlqIuH3Jbgoc+56pcX5LVSZCMaSozPAQBcLaMWO2JUA==
+  dependencies:
+    debounce "^1.2.0"
+
 react-native-splash-screen@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha512-Ls9qiNZzW/OLFoI25wfjjAcrf2DZ975hn2vr6U9gyuxi2nooVbzQeFoQS5vQcbCt9QX5NY8ASEEAtlLdIa6KVg==
+
+react-native-vector-icons@^6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-6.6.0.tgz#66cf004918eb05d90778d64bd42077c1800d481b"
+  integrity sha512-MImKVx8JEvVVBnaShMr7/yTX4Y062JZMupht1T+IEgbqBj4aQeQ1z2SH4VHWKNtWtppk4kz9gYyUiMWqx6tNSw==
+  dependencies:
+    lodash "^4.0.0"
+    prop-types "^15.6.2"
+    yargs "^13.2.2"
 
 react-native@0.61.2:
   version "0.61.2"
@@ -6834,7 +6870,7 @@ yargs@^12.0.5:
     y18n "^3.2.1 || ^4.0.0"
     yargs-parser "^11.1.1"
 
-yargs@^13.3.0:
+yargs@^13.2.2, yargs@^13.3.0:
   version "13.3.0"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-13.3.0.tgz#4c657a55e07e5f2cf947f8a366567c04a0dedc83"
   integrity sha512-2eehun/8ALW8TLoIl7MVaRUrg+yCnenu8B4kBlRxj3GJGDKU1Og7sMXPNm1BYyM1DOJmTZ4YeN/Nwxv+8XJsUA==
