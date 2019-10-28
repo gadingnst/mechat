@@ -1,7 +1,7 @@
 import React from 'react'
 import { createAppContainer } from 'react-navigation'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from '../Components/Icon'
 
 import Chat from './Chat'
 import Account from './Account'
@@ -13,7 +13,8 @@ const Navigator = createMaterialBottomTabNavigator(
             navigationOptions: {
                 tabBarIcon: ({ tintColor }) => (
                     <Icon
-                        style={{ color: tintColor }}
+                        type="Ionicons"
+                        color={tintColor}
                         size={25}
                         name="ios-chatbubbles"
                     />
@@ -25,7 +26,8 @@ const Navigator = createMaterialBottomTabNavigator(
             navigationOptions: {
                 tabBarIcon: ({ tintColor }) => (
                     <Icon
-                        style={{ color: tintColor }}
+                        type="Ionicons"
+                        color={tintColor}
                         size={25}
                         name="ios-contact"
                     />
