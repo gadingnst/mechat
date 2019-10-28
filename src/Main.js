@@ -10,7 +10,8 @@ const theme = {
     colors: {
         ...DefaultTheme.colors,
         primary: Color.Primary,
-        accent: Color.Accent
+        accent: Color.Accent,
+        error: Color.Danger
     }
 }
 

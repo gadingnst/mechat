@@ -1,5 +1,5 @@
 import React from 'react'
-import { Appbar } from 'react-native-paper'
+import { Appbar, TouchableRipple } from 'react-native-paper'
 
 export default ({
     title,
@@ -8,20 +8,23 @@ export default ({
     left,
     right,
     backgroundColor,
-    actions = []
+    actions = [],
+    onPress = () => false
 }) => {
     return (
-        <Appbar.Header style={{ backgroundColor }}>
-            {!back || <Appbar.BackAction onPress={() => back()} />}
-            {left}
-            <Appbar.Content title={title} subtitle={subtitle} />
-            {right}
-            {actions.map(action => (
-                <Appbar.Action
-                    icon={action.icon}
-                    onPress={() => action.onPress()}
-                />
-            ))}
-        </Appbar.Header>
+        <TouchableRipple onPress={() => onPress()}>
+            <Appbar.Header dark style={{ backgroundColor, height: 60 }}>
+                {!back || <Appbar.BackAction onPress={() => back()} />}
+                {left}
+                <Appbar.Content title={title} subtitle={subtitle} />
+                {right}
+                {actions.map(action => (
+                    <Appbar.Action
+                        icon={action.icon}
+                        onPress={() => action.onPress()}
+                    />
+                ))}
+            </Appbar.Header>
+        </TouchableRipple>
     )
 }

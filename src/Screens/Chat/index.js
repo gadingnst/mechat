@@ -13,7 +13,18 @@ export default ({ navigation }) => {
                 avatar:
                     'https://sutanlab.id/assets/img/collections/sutan_new.jpeg'
             },
-            chats: [{ user: 'Sutan Nasution.', message: 'Hei Bro.' }]
+            chats: [
+                {
+                    id: 1,
+                    createdAt: new Date(),
+                    text: 'Hei Bro.',
+                    user: {
+                        name: 'Sutan Nasution.',
+                        avatar:
+                            'https://sutanlab.id/assets/img/collections/sutan_new.jpeg'
+                    }
+                }
+            ]
         },
         {
             user: {
@@ -22,7 +33,18 @@ export default ({ navigation }) => {
                 avatar:
                     'https://instagram.fcgk18-1.fna.fbcdn.net/vp/3152008e1601f9e370d7935206cb5619/5E577E44/t51.2885-15/e35/s1080x1080/65922090_2367583833323057_3899391724464983981_n.jpg?_nc_ht=instagram.fcgk18-1.fna.fbcdn.net&_nc_cat=105'
             },
-            chats: [{ user: 'Rina Mardiana', message: 'Hei Honey' }]
+            chats: [
+                {
+                    id: 1,
+                    createdAt: new Date(),
+                    text: 'Hei Honey ❤️',
+                    user: {
+                        name: 'Rina Mardiana',
+                        avatar:
+                            'https://instagram.fcgk18-1.fna.fbcdn.net/vp/3152008e1601f9e370d7935206cb5619/5E577E44/t51.2885-15/e35/s1080x1080/65922090_2367583833323057_3899391724464983981_n.jpg?_nc_ht=instagram.fcgk18-1.fna.fbcdn.net&_nc_cat=105'
+                    }
+                }
+            ]
         }
     ]
 
@@ -46,7 +68,7 @@ export default ({ navigation }) => {
                             user={chat.user}
                             chats={chat.chats}
                             navigate={() => {
-                                navigation.navigate('RoomChat', chat)
+                                navigation.navigate('ChatRoom', chat)
                             }}
                         />
                     ))}
