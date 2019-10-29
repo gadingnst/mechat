@@ -71,7 +71,7 @@ const Navigator = createStackNavigator(
     },
     {
         headerMode: 'none',
-        initialRouteName: 'App',
+        initialRouteName: 'Auth',
         transitionConfig: nav => navigationTransition(nav)
     }
 )

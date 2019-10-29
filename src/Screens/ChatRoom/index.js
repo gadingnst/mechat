@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Avatar } from 'react-native-paper'
 import { GiftedChat } from 'react-native-gifted-chat'
+import { sendChat } from '../../Redux/Actions/Chat'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 
 export default ({ navigation }) => {
-    const [chats, setChats] = useState(navigation.getParam('chats'))
+    const dispatch = useDispatch()
     const user = navigation.getParam('user')
+    const { chats } = useSelector(({ chat }) =>
+        chat.data.find(({ user: { id } }) => id === user.id)
+    )
+    const [messages, setMessages] = useState(chats)
 
     return (
         <>
@@ -27,10 +33,11 @@ export default ({ navigation }) => {
                 }
             />
             <GiftedChat
-                messages={chats}
+                messages={messages}
                 user={{ _id: 1 }}
                 onSend={chat => {
-                    setChats(GiftedChat.append(chats, chat))
+                    setMessages(GiftedChat.append(messages, chat))
+                    dispatch(sendChat(chat, user))
                 }}
             />
         </>

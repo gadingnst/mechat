@@ -7,7 +7,7 @@ export default ({ user, navigate = () => false, chats = [] }) => {
     return (
         <>
             <List.Item
-                description={chats[chats.length - 1].text}
+                description={chats[0].text}
                 onPress={() => navigate()}
                 title={<Text style={{ fontWeight: 'bold' }}>{user.name}</Text>}
                 right={props => (
