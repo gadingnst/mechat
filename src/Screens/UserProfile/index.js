@@ -1,15 +1,164 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React, { useState } from 'react'
+import {
+    StyleSheet,
+    Linking,
+    View,
+    Text,
+    Image,
+    TouchableOpacity
+} from 'react-native'
+import { Avatar, Card, List } from 'react-native-paper'
+import Parallax from 'react-native-parallax-scroll-view'
+import ImageView from 'react-native-image-view'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 
-export default () => {
+export default ({ navigation }) => {
+    const user = navigation.getParam('user')
+    const [headerShouldVisible, setHeaderShouldVisible] = useState(false)
+    const [modal, showModal] = useState(false)
+    const images = [{ title: user.name, source: { uri: user.avatar } }]
+
     return (
         <>
-            <Header title="My Account" backgroundColor={Color.Accent} />
-            <View>
-                <Text>Hello from user profile!</Text>
-            </View>
+            <ImageView
+                isVisible={modal}
+                animationType="fade"
+                backgroundColor="rgba(0, 0, 0, .55)"
+                images={images}
+                onClose={() => showModal(false)}
+            />
+            <Parallax
+                backgroundColor="transparent"
+                parallaxHeaderHeight={250}
+                backgroundScrollSpeed={2}
+                fixedHeaderHeight={60}
+                renderFixedHeader={() => (
+                    <Header
+                        back={() => navigation.goBack()}
+                        title={headerShouldVisible ? user.name : undefined}
+                        subtitle={
+                            headerShouldVisible
+                                ? user.status
+                                    ? 'Online'
+                                    : 'Offline'
+                                : undefined
+                        }
+                        backgroundColor={
+                            headerShouldVisible ? Color.Primary : 'transparent'
+                        }
+                        left={
+                            !headerShouldVisible || (
+                                <Avatar.Image
+                                    size={45}
+                                    style={{ marginLeft: 10, marginRight: -10 }}
+                                    source={{
+                                        uri: user.avatar
+                                    }}
+                                />
+                            )
+                        }
+                    />
+                )}
+                renderBackground={() => (
+                    <Image
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            resizeMode: 'cover'
+                        }}
+                        source={{
+                            uri: user.avatar
+                        }}
+                    />
+                )}
+                renderForeground={() => (
+                    <>
+                        <View style={styles.banner}>
+                            <TouchableOpacity onPress={() => showModal(true)}>
+                                <Avatar.Image
+                                    size={125}
+                                    source={{ uri: user.avatar }}
+                                    style={{ elevation: 10 }}
+                                />
+                            </TouchableOpacity>
+                            <Text style={styles.bannerText}>{user.name}</Text>
+                            <Text style={styles.bannerSub}>
+                                {user.status ? 'Online' : 'Offline'}
+                            </Text>
+                        </View>
+                    </>
+                )}
+                scrollEvent={({ nativeEvent }) =>
+                    nativeEvent.contentOffset.y < 190
+                        ? setHeaderShouldVisible(false)
+                        : setHeaderShouldVisible(true)
+                }
+            >
+                <View style={{ padding: 10 }}>
+                    <Card style={styles.card}>
+                        <Card.Content>
+                            <List.Item
+                                title="Contact Number"
+                                description={user.number}
+                                left={props => (
+                                    <List.Icon {...props} icon="ios-call" />
+                                )}
+                                onPress={() => {
+                                    Linking.openURL(`tel:${user.number}`)
+                                }}
+                            />
+                            <List.Item
+                                title="Email"
+                                description={user.email}
+                                left={props => (
+                                    <List.Icon {...props} icon="ios-mail" />
+                                )}
+                                onPress={() => {
+                                    Linking.openURL(`mailto:${user.email}`)
+                                }}
+                            />
+                            <List.Item
+                                title="Bio"
+                                description={user.biodata}
+                                left={props => (
+                                    <List.Icon {...props} icon="ios-quote" />
+                                )}
+                                onPress={() => false}
+                            />
+                        </Card.Content>
+                    </Card>
+                </View>
+            </Parallax>
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    card: {
+        borderRadius: 5,
+        elevation: 5
+    },
+    banner: {
+        height: '100%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, .55)'
+    },
+    bannerText: {
+        marginTop: 15,
+        fontWeight: 'bold',
+        fontSize: 22,
+        color: '#fff',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowRadius: 20,
+        textShadowOffset: {
+            width: -1,
+            height: 1
+        }
+    },
+    bannerSub: {
+        color: '#fff'
+    }
+})

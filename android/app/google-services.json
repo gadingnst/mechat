@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "320063284128",
+    "firebase_url": "https://mechat-f593b.firebaseio.com",
+    "project_id": "mechat-f593b",
+    "storage_bucket": "mechat-f593b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320063284128:android:b90bac7ce8799c655a7ac5",
+        "android_client_info": {
+          "package_name": "com.mechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320063284128-cbaaf2tr9deglpkr42dc2b5cgg63rfbm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8KBHMDOPMnxiHlFG5v5ki4ArDLj_uXYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320063284128-cbaaf2tr9deglpkr42dc2b5cgg63rfbm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

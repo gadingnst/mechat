@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Avatar } from 'react-native-paper'
-import { GiftedChat, Bubble } from 'react-native-gifted-chat'
+import { GiftedChat } from 'react-native-gifted-chat'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 
@@ -15,6 +15,7 @@ export default ({ navigation }) => {
                 subtitle={user.status ? 'Online' : 'Offline'}
                 backgroundColor={Color.Primary}
                 back={() => navigation.goBack()}
+                onPress={() => navigation.navigate('UserProfile', { user })}
                 left={
                     <Avatar.Image
                         size={45}
