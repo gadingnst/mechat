@@ -35,6 +35,7 @@ export default ({ navigation }) => {
                 fixedHeaderHeight={60}
                 renderFixedHeader={() => (
                     <Header
+                        elevation={0}
                         back={() => navigation.goBack()}
                         title={headerShouldVisible ? user.name : undefined}
                         subtitle={

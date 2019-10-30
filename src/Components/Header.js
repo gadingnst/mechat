@@ -8,12 +8,16 @@ export default ({
     left,
     right,
     backgroundColor,
+    elevation,
     actions = [],
     onPress = () => false
 }) => {
     return (
         <TouchableRipple onPress={() => onPress()}>
-            <Appbar.Header dark style={{ backgroundColor, height: 60 }}>
+            <Appbar.Header
+                dark
+                style={{ backgroundColor, height: 60, elevation }}
+            >
                 {!back || <Appbar.BackAction onPress={() => back()} />}
                 {left}
                 <Appbar.Content title={title} subtitle={subtitle} />
