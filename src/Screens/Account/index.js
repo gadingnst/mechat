@@ -9,6 +9,7 @@ import { ConfirmDialog } from 'react-native-simple-dialogs'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 import { logout } from '../../Redux/Actions/Auth'
+import { clearAllChats } from '../../Redux/Actions/Chat'
 
 export default ({ navigation }) => {
     const dispatch = useDispatch()
@@ -29,6 +30,7 @@ export default ({ navigation }) => {
                     animation: true,
                     backgroundColor: Color.Danger
                 })
+                dispatch(clearAllChats())
                 navigation.navigate('AppLoadingIndicator')
             })
             .catch(err => {

@@ -3,13 +3,13 @@ import { Text, View } from 'react-native'
 import { List, Avatar, Badge } from 'react-native-paper'
 import Color from '../Assets/Color'
 
-export default ({ user, navigate = () => false, chats = [] }) => {
+export default ({ user, navigate = () => false, subs = '' }) => {
     return (
         <>
             <List.Item
-                description={chats[0].text}
                 onPress={() => navigate()}
                 title={<Text style={{ fontWeight: 'bold' }}>{user.name}</Text>}
+                description={subs}
                 right={props => (
                     <>
                         <List.Icon

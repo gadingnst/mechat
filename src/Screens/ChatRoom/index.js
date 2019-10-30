@@ -1,24 +1,59 @@
-import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState, useEffect, u } from 'react'
+import { useSelector } from 'react-redux'
 import { Avatar } from 'react-native-paper'
 import { GiftedChat } from 'react-native-gifted-chat'
-import { sendChat } from '../../Redux/Actions/Chat'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
+import Firebase from '../../Config/FirebaseSDK'
 
 export default ({ navigation }) => {
-    const dispatch = useDispatch()
     const user = navigation.getParam('user')
-    const { chats } = useSelector(({ chat }) =>
-        chat.data.find(({ user: { id } }) => id === user.id)
+    const currentUser = useSelector(({ auth }) => auth.user)
+    const [msg, setMsg] = useState([])
+
+    const senderRef = Firebase.database().ref(
+        `/contacts/${currentUser.id}/${user.id}/chats`
     )
-    const [messages, setMessages] = useState(chats)
+
+    const receiverRef = pushChat =>
+        Firebase.database().ref(
+            `/contacts/${user.id}/${currentUser.id}${
+                pushChat === 'chat' ? '/chats' : ''
+            }`
+        )
+
+    const onSendChat = (chat = []) => {
+        chat = chat[0]
+        chat = {
+            _id: chat._id,
+            text: chat.text,
+            createdAt: new Date(chat.createdAt).toISOString(),
+            user: {
+                _id: chat.user._id,
+                name: chat.user.name,
+                avatar: chat.user.avatar
+            }
+        }
+        senderRef.push(chat)
+        receiverRef().update({ ...currentUser })
+        receiverRef('chat').push(chat)
+    }
+
+    useEffect(() => {
+        senderRef.on('child_added', snapshot => {
+            const chat = snapshot.val()
+            setMsg(prevMsg => GiftedChat.append(prevMsg, chat))
+        })
+        return () => {
+            senderRef.off('child_added')
+        }
+    }, [])
 
     return (
         <>
             <Header
                 title={user.name}
-                subtitle={user.status ? 'Online' : 'Offline'}
+                subtitle={user.status ? 'Active' : 'Inactive'}
                 backgroundColor={Color.Primary}
                 back={() => navigation.goBack()}
                 onPress={() => navigation.navigate('UserProfile', { user })}
@@ -33,11 +68,12 @@ export default ({ navigation }) => {
                 }
             />
             <GiftedChat
-                messages={messages}
-                user={{ _id: 1 }}
-                onSend={chat => {
-                    setMessages(GiftedChat.append(messages, chat))
-                    dispatch(sendChat(chat, user))
+                messages={msg}
+                onSend={onSendChat}
+                user={{
+                    _id: currentUser.id,
+                    name: currentUser.name,
+                    avatar: currentUser.avatar
                 }}
             />
         </>

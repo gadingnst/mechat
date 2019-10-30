@@ -41,8 +41,8 @@ export default ({ navigation }) => {
                         subtitle={
                             headerShouldVisible
                                 ? user.status
-                                    ? 'Online'
-                                    : 'Offline'
+                                    ? 'Active'
+                                    : 'Inactive'
                                 : undefined
                         }
                         backgroundColor={
@@ -85,7 +85,7 @@ export default ({ navigation }) => {
                             </TouchableOpacity>
                             <Text style={styles.bannerText}>{user.name}</Text>
                             <Text style={styles.bannerSub}>
-                                {user.status ? 'Online' : 'Offline'}
+                                {user.status ? 'Active' : 'Inactive'}
                             </Text>
                         </View>
                     </>
