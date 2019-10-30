@@ -4,6 +4,8 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import { fromRight, zoomIn } from 'react-navigation-transitions'
 
 import Chat from '../../Screens/Chat'
+import Contacts from '../../Screens/Contacts'
+import Maps from '../../Screens/Maps'
 import Account from '../../Screens/Account'
 import ChatRoom from '../../Screens/ChatRoom'
 import UserProfile from '../../Screens/UserProfile'
@@ -42,6 +44,34 @@ export default createStackNavigator(
                         )
                     }
                 },
+                Contacts: {
+                    screen: Contacts,
+                    navigationOptions: {
+                        tabBarIcon: ({ tintColor }) => (
+                            <Icon
+                                type="Ionicons"
+                                color={tintColor}
+                                size={25}
+                                name="ios-contacts"
+                            />
+                        ),
+                        barStyle: { backgroundColor: Color.Accent }
+                    }
+                },
+                Maps: {
+                    screen: Maps,
+                    navigationOptions: {
+                        tabBarIcon: ({ tintColor }) => (
+                            <Icon
+                                type="Ionicons"
+                                color={tintColor}
+                                size={25}
+                                name="ios-map"
+                            />
+                        ),
+                        barStyle: { backgroundColor: Color.Success }
+                    }
+                },
                 Account: {
                     screen: Account,
                     navigationOptions: {
@@ -53,7 +83,7 @@ export default createStackNavigator(
                                 name="ios-contact"
                             />
                         ),
-                        barStyle: { backgroundColor: Color.Accent }
+                        barStyle: { backgroundColor: Color.Info }
                     }
                 }
             },

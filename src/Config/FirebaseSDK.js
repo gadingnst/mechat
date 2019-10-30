@@ -13,6 +13,7 @@ const FirebaseSDK = () => {
             measurementId: 'G-5TS9CQ0ZVE'
         })
     }
+    return Firebase.app()
 }
 
 export default FirebaseSDK()

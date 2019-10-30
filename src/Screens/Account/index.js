@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { View, Text } from 'react-native'
-import { Button } from 'react-native-paper'
+import { View, Text, StyleSheet } from 'react-native'
+import { Button, Avatar } from 'react-native-paper'
 import Toast from 'react-native-root-toast'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
@@ -9,7 +9,7 @@ import { logout } from '../../Redux/Actions/Auth'
 
 export default ({ navigation }) => {
     const dispatch = useDispatch()
-    const loading = useSelector(({ auth }) => auth.loading)
+    const auth = useSelector(({ auth }) => auth)
     const onLogout = () => {
         dispatch(logout())
             .then(() => {
@@ -40,20 +40,27 @@ export default ({ navigation }) => {
 
     return (
         <>
-            <Header title="My Account" backgroundColor={Color.Accent} />
-            <View>
-                <Text>Hello from account!</Text>
+            <Header title="My Account" backgroundColor={Color.Info} />
+            <View style={styles.container}>
+                <Avatar.Image source={{ uri: auth.user.avatar }} />
+                <Text>{JSON.stringify(auth.user)}</Text>
+                <Button
+                    icon="ios-backspace"
+                    color={Color.Danger}
+                    mode="contained"
+                    loading={auth.loading}
+                    disabled={auth.loading}
+                    onPress={onLogout}
+                >
+                    LOGOUT
+                </Button>
             </View>
-            <Button
-                icon="ios-backspace"
-                color={Color.Danger}
-                mode="contained"
-                loading={loading}
-                disabled={loading}
-                onPress={onLogout}
-            >
-                LOGOUT
-            </Button>
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 10
+    }
+})

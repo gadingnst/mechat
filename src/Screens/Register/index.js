@@ -52,6 +52,7 @@ export default ({ navigation }) => {
                             label="Full Name"
                             mode="outlined"
                             value={name}
+                            error={error.includes('name')}
                             onChangeText={value => {
                                 setError('')
                                 setName(value)

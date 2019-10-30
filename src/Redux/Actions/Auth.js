@@ -1,33 +1,28 @@
-import { auth as Auth } from 'firebase'
 import Firebase from '../../Config/FirebaseSDK'
 
 export const login = data => ({
     type: 'LOGIN_USER',
-    payload: new Promise((resolve, reject) => {
-        Firebase.auth()
-            .signInWithEmailAndPassword(
+    payload: new Promise(async (resolve, reject) => {
+        try {
+            await Firebase.auth().signInWithEmailAndPassword(
                 data.email.trim().toLowerCase(),
                 data.password
             )
-            .then(() => {
-                const user = Firebase.auth().currentUser
-                const dbRef = Firebase.database().ref(`/users/${user.uid}`)
-                return dbRef
-                    .update({ status: true })
-                    .then(() => dbRef.once('value'))
-                    .then(snapshot => ({
-                        id: user.uid,
-                        name: snapshot.name,
-                        email: snapshot.email,
-                        avatar: snapshot.avatar,
-                        status: snapshot.status
-                    }))
-                    .catch(err => {
-                        throw err
-                    })
+
+            const user = Firebase.auth().currentUser
+            const dbRef = Firebase.database().ref(`/users/${user.uid}`)
+            await dbRef.update({ status: true })
+            const snapshot = (await dbRef.once('value')).val()
+            resolve({
+                id: user.uid,
+                name: snapshot.name,
+                email: snapshot.email,
+                avatar: snapshot.avatar,
+                status: snapshot.status
             })
-            .then(data => resolve(data))
-            .catch(err => reject(err))
+        } catch (err) {
+            reject(err)
+        }
     })
 })
 
@@ -40,7 +35,7 @@ export const loginWithGoogle = () => ({
 
 export const register = data => ({
     type: 'LOGIN_USER',
-    payload: new Promise((resolve, reject) => {
+    payload: new Promise(async (resolve, reject) => {
         data = {
             name: data.name.trim(),
             email: data.email.trim().toLowerCase(),
@@ -51,21 +46,23 @@ export const register = data => ({
             status: true
         }
 
-        Firebase.auth()
-            .createUserWithEmailAndPassword(data.email, data.password)
-            .then(() => {
-                delete data.password
-                const user = Firebase.auth().currentUser
-                return Firebase.database()
-                    .ref(`/users/${user.uid}`)
-                    .set(data)
-                    .then(() => ({ id: user.uid, ...data }))
-                    .catch(err => {
-                        throw err
-                    })
-            })
-            .then(data => resolve(data))
-            .catch(err => reject(err))
+        try {
+            await Firebase.auth().createUserWithEmailAndPassword(
+                data.email,
+                data.password
+            )
+
+            const user = Firebase.auth().currentUser
+            delete data.password
+
+            await Firebase.database()
+                .ref(`/users/${user.uid}`)
+                .set(data)
+
+            resolve({ id: user.uid, ...data })
+        } catch (err) {
+            reject(err)
+        }
     })
 })
 
@@ -82,4 +79,4 @@ export const logout = () => ({
     })
 })
 
-export default { login, register, logout }
+export default { login, register, logout, loginWithGoogle }
