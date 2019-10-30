@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import SplashScreen from 'react-native-splash-screen'
 import { Provider, DefaultTheme } from 'react-native-paper'
+import SplashScreen from 'react-native-splash-screen'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Navigator from './Navigator'
 import Color from './Assets/Color'

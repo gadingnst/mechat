@@ -1,11 +1,45 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Card, TextInput, Button, Title } from 'react-native-paper'
+import Toast from 'react-native-root-toast'
 import Color from '../../Assets/Color'
+import { login } from '../../Redux/Actions/Auth'
 
 export default ({ navigation }) => {
+    const dispatch = useDispatch()
+    const loading = useSelector(({ auth }) => auth.loading)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+
+    const onLogin = () => {
+        dispatch(login({ email, password }))
+            .then(() => {
+                setEmail('')
+                setPassword('')
+                setError('')
+                Toast.show('Logged In.', {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.BOTTOM,
+                    animation: true
+                })
+                navigation.navigate('AppLoadingIndicator')
+            })
+            .catch(err => {
+                setError(err.message)
+                const message =
+                    err.message === 'Network Error'
+                        ? "Can't established your network."
+                        : err.message
+                Toast.show(message, {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.BOTTOM,
+                    backgroundColor: Color.Danger,
+                    animation: true
+                })
+            })
+    }
 
     return (
         <>
@@ -22,24 +56,34 @@ export default ({ navigation }) => {
                             label="Email"
                             mode="outlined"
                             value={email}
+                            error={error.includes('email')}
                             onChangeText={value => setEmail(value)}
                         />
                         <TextInput
+                            secureTextEntry
                             label="Password"
                             mode="outlined"
                             value={password}
-                            secureTextEntry
+                            error={error.includes('password')}
                             onChangeText={value => setPassword(value)}
                         />
                         <Button
                             icon="ios-paper-plane"
                             mode="contained"
+                            loading={loading}
+                            disabled={loading}
                             style={styles.btnLogin}
+                            onPress={onLogin}
                         >
                             LOGIN
                         </Button>
                         <Text style={styles.text}>OR</Text>
-                        <Button icon="logo-google" style={styles.btnGoogle}>
+                        <Button
+                            icon="logo-google"
+                            loading={loading}
+                            disabled={loading}
+                            style={styles.btnGoogle}
+                        >
                             SIGN IN WITH GOOGLE
                         </Button>
                         <TouchableOpacity

@@ -77,8 +77,6 @@ export default (state = initial, action) => {
                 ...state
             }
         default:
-            return {
-                ...state
-            }
+            return state
     }
 }

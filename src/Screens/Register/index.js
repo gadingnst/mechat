@@ -1,52 +1,44 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Card, TextInput, Button, Title, HelperText } from 'react-native-paper'
 import Toast from 'react-native-root-toast'
+import { register } from '../../Redux/Actions/Auth'
 import Color from '../../Assets/Color'
-import Firebase from '../../Config/FirebaseSDK'
 
 export default ({ navigation }) => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [loading, showLoading] = useState(false)
     const [error, setError] = useState('')
+    const dispatch = useDispatch()
+    const loading = useSelector(({ auth }) => auth.loading)
 
     const handleRegister = () => {
-        showLoading(true)
-        const data = {
-            name: name.trim(),
-            email: email.trim(),
-            password
-        }
-        if (data.name.length > 0) {
-            Firebase.auth()
-                .createUserWithEmailAndPassword(data.email, data.password)
-                .then(user => {
+        if (name.length > 0) {
+            dispatch(register({ name, email, password }))
+                .then(() => {
                     setError('')
-                    setName('')
                     setEmail('')
+                    setName('')
                     setPassword('')
-                    console.log(user)
-                    Toast.show('Success Register!', {
+                    Toast.show('Success Register.', {
                         duration: Toast.durations.LONG,
                         position: Toast.positions.BOTTOM,
-                        shadow: true,
                         animation: true
                     })
+                    navigation.navigate('AppLoadingIndicator')
                 })
                 .catch(err => setError(err.message))
-                .finally(() => showLoading(false))
         } else {
             setError('The name cannot be empty.')
-            showLoading(false)
         }
     }
 
     return (
         <>
             <View style={styles.container}>
-                <Card style={styles.loginCard}>
+                <Card style={styles.registerCard} elevation={0}>
                     <Card.Cover
                         style={{ width: 125, height: 125, alignSelf: 'center' }}
                         source={require('../../Assets/Images/AppIconSplash/icon.jpg')}
@@ -143,12 +135,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 30
+        alignItems: 'center'
     },
-    loginCard: {
-        borderRadius: 5,
-        elevation: 5,
+    registerCard: {
+        borderColor: 'transparent',
+        borderWidth: 0,
         width: '100%'
     },
     text: {
