@@ -1,3 +1,4 @@
+import { auth as Auth } from 'firebase'
 import Firebase from '../../Config/FirebaseSDK'
 
 export const login = data => ({
@@ -27,6 +28,13 @@ export const login = data => ({
             })
             .then(data => resolve(data))
             .catch(err => reject(err))
+    })
+})
+
+export const loginWithGoogle = () => ({
+    type: 'LOGIN_USER',
+    payload: new Promise((resolve, reject) => {
+        // TODO
     })
 })
 

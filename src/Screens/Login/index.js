@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Card, TextInput, Button, Title } from 'react-native-paper'
 import Toast from 'react-native-root-toast'
 import Color from '../../Assets/Color'
-import { login } from '../../Redux/Actions/Auth'
+import { login, loginWithGoogle } from '../../Redux/Actions/Auth'
 
 export default ({ navigation }) => {
     const dispatch = useDispatch()
@@ -13,8 +13,22 @@ export default ({ navigation }) => {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
 
-    const onLogin = () => {
-        dispatch(login({ email, password }))
+    const onLogin = (provider = 'default') => {
+        let loginAction
+
+        switch (provider) {
+            case 'default':
+                loginAction = login
+                break
+            case 'google':
+                loginAction = loginWithGoogle
+                break
+            default:
+                loginAction = login
+                break
+        }
+
+        dispatch(loginAction({ email, password }))
             .then(() => {
                 setEmail('')
                 setPassword('')
@@ -77,15 +91,16 @@ export default ({ navigation }) => {
                         >
                             LOGIN
                         </Button>
-                        <Text style={styles.text}>OR</Text>
+                        {/* <Text style={styles.text}>OR</Text>
                         <Button
                             icon="logo-google"
                             loading={loading}
                             disabled={loading}
                             style={styles.btnGoogle}
+                            onPress={() => onLogin('google')}
                         >
                             SIGN IN WITH GOOGLE
-                        </Button>
+                        </Button> */}
                         <TouchableOpacity
                             style={styles.btnRegister}
                             onPress={() => navigation.navigate('Register')}
