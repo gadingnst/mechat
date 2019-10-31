@@ -4,8 +4,6 @@ import { StyleSheet, View, Picker, Text, Dimensions } from 'react-native'
 import { Card } from 'react-native-paper'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import Geolocation from 'react-native-geolocation-service'
-import Color from '../../Assets/Color'
-import Header from '../../Components/Header'
 import Firebase from '../../Config/FirebaseSDK'
 
 const ASPECT_RATIO =
