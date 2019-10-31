@@ -61,7 +61,7 @@ export default ({ navigation }) => {
                 <Card style={styles.loginCard}>
                     <Card.Cover
                         style={{ width: 125, height: 125, alignSelf: 'center' }}
-                        source={require('../../Assets/Images/AppIconSplash/icon.jpg')}
+                        source={require('../../Assets/Images/AppIconSplash/logo.jpg')}
                     />
                     <Card.Content>
                         <Title style={{ alignSelf: 'center' }}>Login</Title>
