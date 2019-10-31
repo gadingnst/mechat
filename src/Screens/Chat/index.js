@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { View, ScrollView } from 'react-native'
 import { Avatar } from 'react-native-paper'
 import Header from '../../Components/Header'
-import ChatList from '../../Components/ChatList'
+import UserList from '../../Components/UserList'
 import Firebase from '../../Config/FirebaseSDK'
 
 export default ({ navigation }) => {
@@ -71,7 +71,7 @@ export default ({ navigation }) => {
             <ScrollView>
                 <View style={{ padding: 5 }}>
                     {chats.map(item => (
-                        <ChatList
+                        <UserList
                             key={item.id}
                             user={item.user}
                             navigate={() => {
