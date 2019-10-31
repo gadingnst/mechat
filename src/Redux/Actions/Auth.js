@@ -4,21 +4,45 @@ export const login = data => ({
     type: 'LOGIN_USER',
     payload: new Promise(async (resolve, reject) => {
         try {
+            const updates = {}
             await Firebase.auth().signInWithEmailAndPassword(
                 data.email.trim().toLowerCase(),
                 data.password
             )
 
             const user = Firebase.auth().currentUser
-            const dbRef = Firebase.database().ref(`/users/${user.uid}`)
-            await dbRef.update({ status: true })
-            const snapshot = (await dbRef.once('value')).val()
+            const db = Firebase.database()
+
+            const snapshot = (await db.ref('/contacts').once('value')).val()
+
+            const usersSnapshots = Object.keys(snapshot).map(contactsId => {
+                if (contactsId !== user.uid) {
+                    if (snapshot[contactsId].hasOwnProperty(user.uid)) {
+                        return `/contacts/${contactsId}/${user.uid}/status`
+                    }
+                }
+                return false
+            })
+
+            usersSnapshots
+                .filter(item => item)
+                .forEach(item => {
+                    updates[item] = true
+                })
+
+            updates[`/users/${user.uid}/status`] = true
+
+            await db.ref().update(updates)
+            const userData = (await db
+                .ref(`/users/${user.uid}`)
+                .once('value')).val()
+
             resolve({
                 id: user.uid,
-                name: snapshot.name,
-                email: snapshot.email,
-                avatar: snapshot.avatar,
-                status: snapshot.status
+                name: userData.name,
+                email: userData.email,
+                avatar: userData.avatar,
+                status: userData.status
             })
         } catch (err) {
             reject(err)
@@ -68,11 +92,32 @@ export const register = data => ({
 
 export const logout = () => ({
     type: 'LOGOUT_USER',
-    payload: new Promise((resolve, reject) => {
+    payload: new Promise(async (resolve, reject) => {
         const user = Firebase.auth().currentUser
-        Firebase.database()
-            .ref(`/users/${user.uid}`)
-            .update({ status: false })
+        const db = Firebase.database()
+        const updates = {}
+
+        const contactSnapshots = (await db.ref('/contacts').once('value')).val()
+
+        const usersSnapshots = Object.keys(contactSnapshots).map(contactsId => {
+            if (contactsId !== user.uid) {
+                if (contactSnapshots[contactsId].hasOwnProperty(user.uid)) {
+                    return `/contacts/${contactsId}/${user.uid}/status`
+                }
+            }
+            return false
+        })
+
+        usersSnapshots
+            .filter(item => item)
+            .forEach(item => {
+                updates[item] = false
+            })
+
+        updates[`/users/${user.uid}/status`] = false
+
+        db.ref()
+            .update(updates)
             .then(() => Firebase.auth().signOut())
             .then(() => resolve())
             .catch(err => reject(err))
