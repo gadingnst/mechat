@@ -9,22 +9,45 @@ import Firebase from '../../Config/FirebaseSDK'
 export default ({ navigation }) => {
     const { user } = useSelector(state => state.auth)
     const [chats, setChats] = useState([])
+
     useEffect(() => {
         Firebase.database()
             .ref(`/contacts/${user.id}`)
-            .once('value', snapshot => {
+            .on('value', snapshot => {
                 let data = snapshot.val()
                 data = Object.keys(data || {}).map(id => {
-                    const person = {
-                        id,
-                        name: data[id].name,
-                        email: data[id].email,
-                        avatar: data[id].avatar,
-                        status: data[id].status
+                    let lastMsg = {}
+
+                    if (data[id].chats) {
+                        lastMsg =
+                            data[id].chats[
+                                Object.keys(data[id].chats)[
+                                    Object.keys(data[id].chats).length - 1
+                                ]
+                            ]
                     }
-                    return { user: person }
+
+                    return {
+                        lastMsg,
+                        user: {
+                            id,
+                            name: data[id].name,
+                            email: data[id].email,
+                            avatar: data[id].avatar,
+                            status: data[id].status
+                        }
+                    }
                 })
-                setChats(data)
+                setChats(
+                    data
+                        .filter(item => Object.keys(item.lastMsg).length > 0)
+                        .sort((a, b) =>
+                            new Date(a.lastMsg.createdAt).getTime() >
+                            new Date(b.lastMsg.createdAt).getTime()
+                                ? -1
+                                : 1
+                        )
+                )
             })
         return () => {
             Firebase.database()
@@ -47,14 +70,14 @@ export default ({ navigation }) => {
             />
             <ScrollView>
                 <View style={{ padding: 5 }}>
-                    {chats.map((chat, i) => (
+                    {chats.map(item => (
                         <ChatList
-                            key={i}
-                            user={chat.user}
-                            subs={chat.user.email}
+                            key={item.id}
+                            user={item.user}
                             navigate={() => {
-                                navigation.navigate('ChatRoom', chat)
+                                navigation.navigate('ChatRoom', item)
                             }}
+                            subs={item.lastMsg.text}
                         />
                     ))}
                 </View>
