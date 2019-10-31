@@ -101,7 +101,7 @@ export default ({ navigation }) => {
                         <Card.Content>
                             <List.Item
                                 title="Contact Number"
-                                description={user.number}
+                                description={user.number || 'No phone number.'}
                                 left={props => (
                                     <List.Icon {...props} icon="ios-call" />
                                 )}
@@ -121,7 +121,7 @@ export default ({ navigation }) => {
                             />
                             <List.Item
                                 title="Bio"
-                                description={user.biodata}
+                                description={user.biodata || 'No bio.'}
                                 left={props => (
                                     <List.Icon {...props} icon="ios-quote" />
                                 )}

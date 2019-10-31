@@ -140,6 +140,7 @@ export default () => {
                                 <Picker.Item label="Your Location" value={{}} />
                                 {friends.map(item => (
                                     <Picker.Item
+                                        key={item.id}
                                         label={item.name}
                                         value={item}
                                     />
