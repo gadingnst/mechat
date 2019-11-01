@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+    View,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    Platform
+} from 'react-native'
 import { TextInput, Button, Avatar } from 'react-native-paper'
 import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-root-toast'
+// import RNFetchBlob from 'react-native-fetch-blob'
 import Firebase from '../../Config/FirebaseSDK'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 import { updateUser } from '../../Redux/Actions/Auth'
 
+// const Blob = RNFetchBlob.polyfill.Blob
+// const fs = RNFetchBlob.fs
+
 export default ({ navigation }) => {
     const user = navigation.getParam('user')
+    const dispatch = useDispatch()
     const [name, setName] = useState(user.name || '')
     const [number, setNumber] = useState(user.number || '')
     const [bio, setBio] = useState(user.bio || '')
@@ -32,8 +43,7 @@ export default ({ navigation }) => {
                 Toast.show('Canceled.', {
                     duration: Toast.durations.LONG,
                     position: Toast.positions.BOTTOM,
-                    animation: true,
-                    backgroundColor: Color.Danger
+                    animation: true
                 })
             } else if (res.error) {
                 Toast.show(
@@ -46,16 +56,94 @@ export default ({ navigation }) => {
                     }
                 )
             } else {
-                setAvatar({
-                    uri: res.uri,
-                    type: res.type,
-                    name: res.fileName
-                })
+                setAvatar(res)
                 return showLoading(false)
             }
             setAvatar(avatar)
             showLoading(false)
         })
+    }
+
+    const updateProfile = async () => {
+        showLoading(true)
+        const db = Firebase.database()
+        const updates = {}
+
+        if (name.length > 0) {
+            const data = {
+                name,
+                number: number.length > 0 ? number : null,
+                biodata: bio.length > 0 ? bio : null,
+                avatar: `https://ui-avatars.com/api/?size=256&name=${name
+                    .trim()
+                    .replace(/\s+/, '+')}`
+            }
+
+            try {
+                if (avatar) {
+                    // const imageRef = Firebase.storage()
+                    //     .ref('/avatars')
+                    //     .child(user.id)
+
+                    // const mime = 'application/octet-stream'
+                    // const uploadUri =
+                    //     Platform.OS === 'ios'
+                    //         ? avatar.uri.replace('file://', '')
+                    //         : avatar.uri
+
+                    // let blob = await fs.readFile(uploadUri, 'base64')
+                    // blob = await Blob.build(blob, { type: `${mime};BASE64` })
+                    // await imageRef.put(blob, { contentType: mime })
+                    // blob.close()
+                    // data.avatar = imageRef.getDownloadURL()
+                    // console.log(data)
+                }
+                const snapshot = (await db.ref('/contacts').once('value')).val()
+
+                const usersSnapshots = Object.keys(snapshot).map(contactsId => {
+                    if (contactsId !== user.id) {
+                        if (snapshot[contactsId].hasOwnProperty(user.id)) {
+                            return `/contacts/${contactsId}/${user.id}`
+                        }
+                    }
+                    return false
+                })
+
+                usersSnapshots
+                    .filter(item => item)
+                    .forEach(item => {
+                        updates[`${item}/name`] = data.name
+                        updates[`${item}/biodata`] = data.biodata
+                        updates[`${item}/number`] = data.number
+                        updates[`${item}/avatar`] = data.avatar
+                    })
+
+                updates[`/users/${user.id}/name`] = data.name
+                updates[`/users/${user.id}/biodata`] = data.biodata
+                updates[`/users/${user.id}/number`] = data.number
+                updates[`/users/${user.id}/avatar`] = data.avatar
+
+                await db.ref().update(updates)
+                dispatch(updateUser(data))
+
+                Toast.show('Success updating profile.', {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.BOTTOM,
+                    animation: true
+                })
+                navigation.goBack()
+            } catch (err) {
+                console.log(err)
+            }
+        } else {
+            Toast.show('Name must not be empty.', {
+                duration: Toast.durations.LONG,
+                position: Toast.positions.BOTTOM,
+                animation: true,
+                backgroundColor: Color.Danger
+            })
+        }
+        showLoading(false)
     }
 
     useEffect(() => {
@@ -74,7 +162,6 @@ export default ({ navigation }) => {
             <ScrollView>
                 <View style={{ padding: 15 }}>
                     <TextInput
-                        autoFocus
                         label="Name"
                         mode="outlined"
                         style={styles.input}
@@ -116,6 +203,9 @@ export default ({ navigation }) => {
                         mode="outlined"
                         style={{ marginVertical: 10 }}
                         color={Color.Info}
+                        loading={loading}
+                        disabled={loading}
+                        onPress={updateProfile}
                     >
                         Update Profile
                     </Button>
