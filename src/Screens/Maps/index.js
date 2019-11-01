@@ -7,6 +7,7 @@ import Geolocation from 'react-native-geolocation-service'
 import { GOOGLE_MAP_API_KEY } from 'react-native-dotenv'
 import axios from 'axios'
 import Firebase from '../../Config/FirebaseSDK'
+import RandomColor from 'randomcolor'
 
 const ASPECT_RATIO =
     Dimensions.get('window').width / Dimensions.get('window').height
@@ -178,10 +179,11 @@ export default ({ navigation }) => {
                     />
                     {friends.map(item => (
                         <MapView.Marker
+                            key={item.id}
                             title={item.name.split(/\s+/)[0]}
                             description={item.location.address}
                             coordinate={item.location}
-                            key={item.id}
+                            pinColor={RandomColor({ luminosity: 'bright' })}
                             onCalloutPress={() => {
                                 navigation.navigate('UserProfile', {
                                     user: item
