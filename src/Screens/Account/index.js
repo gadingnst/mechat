@@ -145,21 +145,13 @@ export default ({ navigation }) => {
                                 onPress={() => false}
                             />
                             <Button
+                                dark
                                 style={styles.btn}
                                 icon="ios-create"
                                 mode="contained"
+                                color={Color.Accent}
                             >
                                 Edit Profile
-                            </Button>
-                            <Button
-                                style={{
-                                    ...styles.btn,
-                                    backgroundColor: Color.Accent
-                                }}
-                                icon="ios-camera"
-                                mode="contained"
-                            >
-                                Change Avatar
                             </Button>
                         </Card.Content>
                         <Card.Actions>
