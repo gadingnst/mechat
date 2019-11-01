@@ -29,7 +29,6 @@ export default ({ navigation }) => {
                     animation: true,
                     backgroundColor: Color.Danger
                 })
-                dispatch(clearAllChats())
                 navigation.navigate('AppLoadingIndicator')
             })
             .catch(err => {
@@ -148,7 +147,12 @@ export default ({ navigation }) => {
                                 style={styles.btn}
                                 icon="ios-create"
                                 mode="contained"
-                                color={Color.Accent}
+                                color={Color.Info}
+                                onPress={() => {
+                                    navigation.navigate('UpdateAccount', {
+                                        user
+                                    })
+                                }}
                             >
                                 Edit Profile
                             </Button>
