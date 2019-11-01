@@ -31,10 +31,7 @@ export default ({ navigation }) => {
                         lastMsg,
                         user: {
                             id,
-                            name: data[id].name,
-                            email: data[id].email,
-                            avatar: data[id].avatar,
-                            status: data[id].status
+                            ...data[id]
                         }
                     }
                 })
@@ -70,9 +67,9 @@ export default ({ navigation }) => {
             />
             <ScrollView>
                 <View style={{ padding: 5 }}>
-                    {chats.map(item => (
+                    {chats.map((item, i) => (
                         <UserList
-                            key={item.id}
+                            key={item.id || i}
                             user={item.user}
                             navigate={() => {
                                 navigation.navigate('ChatRoom', item)

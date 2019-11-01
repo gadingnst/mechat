@@ -22,8 +22,9 @@ export default ({
                 {left}
                 <Appbar.Content title={title} subtitle={subtitle} />
                 {right}
-                {actions.map(action => (
+                {actions.map((action, i) => (
                     <Appbar.Action
+                        key={i}
                         icon={action.icon}
                         onPress={() => action.onPress()}
                     />

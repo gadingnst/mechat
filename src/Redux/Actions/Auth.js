@@ -81,7 +81,7 @@ export const register = data => ({
 
             await Firebase.database()
                 .ref(`/users/${user.uid}`)
-                .set(data)
+                .set({ id: user.uid, ...data })
 
             resolve({ id: user.uid, ...data })
         } catch (err) {

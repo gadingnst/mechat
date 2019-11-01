@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { StyleSheet, View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
+import { Searchbar } from 'react-native-paper'
+import { NavigationEvents } from 'react-navigation'
 import Header from '../../Components/Header'
 import UserList from '../../Components/UserList'
 import Color from '../../Assets/Color'
 import Firebase from '../../Config/FirebaseSDK'
-import { Searchbar } from 'react-native-paper'
 
 const Contacts = ({ contacts, navigate = () => false }) => {
     if (contacts.length > 0) {
@@ -13,12 +14,12 @@ const Contacts = ({ contacts, navigate = () => false }) => {
             <UserList
                 key={item.id}
                 user={item}
+                subs={item.email}
                 navigate={() => {
                     navigate('UserProfile', {
                         user: item
                     })
                 }}
-                subs={item.email}
             />
         ))
     } else {
@@ -50,7 +51,14 @@ export default ({ navigation }) => {
         setFilteredContacts(filtered)
     }
 
-    useEffect(() => {
+    const onScreenFocus = params => {
+        if (params.contactUpdated) {
+            getContacts()
+        }
+        return false
+    }
+
+    const getContacts = () => {
         Firebase.database()
             .ref(`/contacts/${user.id}`)
             .on('value', snapshot => {
@@ -58,19 +66,36 @@ export default ({ navigation }) => {
                 setContacts(
                     Object.keys(data || {}).map(id => ({
                         id,
-                        name: data[id].name,
-                        email: data[id].email,
-                        avatar: data[id].avatar,
-                        status: data[id].status
+                        ...data[id]
                     }))
                 )
             })
+    }
+
+    useEffect(() => {
+        getContacts()
     }, [])
 
     return (
         <>
-            <Header title="Contacts" backgroundColor={Color.Accent} />
-            <View>
+            <NavigationEvents
+                onDidFocus={({ state }) =>
+                    state.params ? onScreenFocus(state.params) : false
+                }
+            />
+            <Header
+                title="Contacts"
+                backgroundColor={Color.Accent}
+                actions={[
+                    {
+                        icon: 'ios-add-circle',
+                        onPress: () => {
+                            navigation.navigate('AddContact')
+                        }
+                    }
+                ]}
+            />
+            <View style={{ padding: 10 }}>
                 <Searchbar
                     placeholder="Search Contacts"
                     onChangeText={onSearchContacts}
@@ -88,7 +113,3 @@ export default ({ navigation }) => {
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    
-})

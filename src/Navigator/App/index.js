@@ -5,6 +5,7 @@ import { fromRight, zoomIn } from 'react-navigation-transitions'
 
 import Chat from '../../Screens/Chat'
 import Contacts from '../../Screens/Contacts'
+import AddContact from '../../Screens/AddContact'
 import Maps from '../../Screens/Maps'
 import Account from '../../Screens/Account'
 import ChatRoom from '../../Screens/ChatRoom'
@@ -45,7 +46,16 @@ export default createStackNavigator(
                     }
                 },
                 Contacts: {
-                    screen: Contacts,
+                    screen: createStackNavigator(
+                        {
+                            Contacts,
+                            AddContact
+                        },
+                        {
+                            headerMode: 'none',
+                            initialRouteName: 'Contacts'
+                        }
+                    ),
                     navigationOptions: {
                         tabBarIcon: ({ tintColor }) => (
                             <Icon

@@ -4,6 +4,8 @@ import { StyleSheet, View, Picker, Text, Dimensions } from 'react-native'
 import { Card } from 'react-native-paper'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import Geolocation from 'react-native-geolocation-service'
+import { GOOGLE_MAP_API_KEY } from 'react-native-dotenv'
+import axios from 'axios'
 import Firebase from '../../Config/FirebaseSDK'
 
 const ASPECT_RATIO =
@@ -11,6 +13,7 @@ const ASPECT_RATIO =
 
 const LATITUDE_DELTA = 0.0922
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
+
 const initialRegion = {
     latitude: -6.117664,
     longitude: 106.906349,
@@ -32,12 +35,23 @@ export default () => {
         maximumAge: 10000
     }
 
+    const getAddress = (lat, lng) =>
+        axios
+            .get(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAP_API_KEY}`
+            )
+            .then(({ data }) => data.results[0].formatted_address)
+
     const handleGeo = {
         success: async position => {
             const updates = {}
             const location = {
                 latitude: position.coords.latitude,
-                longitude: position.coords.longitude
+                longitude: position.coords.longitude,
+                address: await getAddress(
+                    position.coords.latitude,
+                    position.coords.longitude
+                )
             }
             setRegion({ ...region, ...location })
             setCurrentLocation({ ...region, ...location })
@@ -91,10 +105,7 @@ export default () => {
                 let data = snapshot.val()
                 data = Object.keys(data || {}).map(id => ({
                     id,
-                    name: data[id].name,
-                    email: data[id].email,
-                    avatar: data[id].avatar,
-                    status: data[id].status,
+                    ...data[id],
                     location:
                         {
                             ...data[id].location,
@@ -103,7 +114,9 @@ export default () => {
                         } || {}
                 }))
                 data = data.filter(
-                    item => Object.keys(item.location).length > 0
+                    item =>
+                        item.location.hasOwnProperty('latitude') &&
+                        item.location.hasOwnProperty('longitude')
                 )
                 setFriends(data)
             })
@@ -160,12 +173,14 @@ export default () => {
                     <MapView.Marker
                         title="You"
                         coordinate={currentLocation}
+                        description={currentLocation.address}
                         key={user.id}
                     />
                     {friends.map(item => (
                         <MapView.Marker
                             flat
                             title={item.name.split(/\s+/)[0]}
+                            description={item.location.address}
                             coordinate={item.location}
                             key={item.id}
                         />
