@@ -18,7 +18,7 @@ export const login = data => ({
             const usersSnapshots = Object.keys(snapshot).map(contactsId => {
                 if (contactsId !== user.uid) {
                     if (snapshot[contactsId].hasOwnProperty(user.uid)) {
-                        return `/contacts/${contactsId}/${user.uid}/status`
+                        return `/contacts/${contactsId}/${user.uid}`
                     }
                 }
                 return false
@@ -27,10 +27,12 @@ export const login = data => ({
             usersSnapshots
                 .filter(item => item)
                 .forEach(item => {
-                    updates[item] = true
+                    updates[`${item}/status`] = true
+                    updates[`${item}/deviceId`] = data.deviceId
                 })
 
             updates[`/users/${user.uid}/status`] = true
+            updates[`/users/${user.uid}/deviceId`] = data.deviceId
 
             await db.ref().update(updates)
             const userData = (await db
@@ -64,6 +66,7 @@ export const register = data => ({
             name: data.name.trim(),
             email: data.email.trim().toLowerCase(),
             password: data.password,
+            deviceId: data.deviceId || null,
             avatar: `https://ui-avatars.com/api/?size=256&name=${data.name
                 .trim()
                 .replace(/\s+/, '+')}`,
@@ -102,7 +105,7 @@ export const logout = () => ({
         const usersSnapshots = Object.keys(contactSnapshots).map(contactsId => {
             if (contactsId !== user.uid) {
                 if (contactSnapshots[contactsId].hasOwnProperty(user.uid)) {
-                    return `/contacts/${contactsId}/${user.uid}/status`
+                    return `/contacts/${contactsId}/${user.uid}`
                 }
             }
             return false
@@ -111,10 +114,12 @@ export const logout = () => ({
         usersSnapshots
             .filter(item => item)
             .forEach(item => {
-                updates[item] = false
+                updates[`${item}/status`] = false
+                updates[`${item}/deviceId`] = null
             })
 
         updates[`/users/${user.uid}/status`] = false
+        updates[`/users/${user.uid}/deviceId`] = null
 
         db.ref()
             .update(updates)

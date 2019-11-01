@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Card, TextInput, Button, Title, HelperText } from 'react-native-paper'
+import OneSignal from 'react-native-onesignal'
 import Toast from 'react-native-root-toast'
 import { register } from '../../Redux/Actions/Auth'
 import Color from '../../Assets/Color'
@@ -11,12 +12,13 @@ export default ({ navigation }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [deviceId, setDeviceId] = useState(null)
     const dispatch = useDispatch()
     const loading = useSelector(({ auth }) => auth.loading)
 
     const handleRegister = () => {
         if (name.length > 0) {
-            dispatch(register({ name, email, password }))
+            dispatch(register({ name, email, password, deviceId }))
                 .then(() => {
                     setError('')
                     setEmail('')
@@ -34,6 +36,15 @@ export default ({ navigation }) => {
             setError('The name cannot be empty.')
         }
     }
+
+    useEffect(() => {
+        OneSignal.addEventListener('ids', device => {
+            setDeviceId(device.userId)
+        })
+        return () => {
+            OneSignal.removeEventListener('ids')
+        }
+    }, [])
 
     return (
         <>

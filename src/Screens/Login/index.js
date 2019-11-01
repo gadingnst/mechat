@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Card, TextInput, Button, Title } from 'react-native-paper'
+import OneSignal from 'react-native-onesignal'
 import Toast from 'react-native-root-toast'
 import Color from '../../Assets/Color'
 import { login, loginWithGoogle } from '../../Redux/Actions/Auth'
@@ -12,6 +13,16 @@ export default ({ navigation }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [deviceId, setDeviceId] = useState(null)
+
+    useEffect(() => {
+        OneSignal.addEventListener('ids', device => {
+            setDeviceId(device.userId)
+        })
+        return () => {
+            OneSignal.removeEventListener('ids')
+        }
+    }, [])
 
     const onLogin = (provider = 'default') => {
         let loginAction
@@ -28,7 +39,7 @@ export default ({ navigation }) => {
                 break
         }
 
-        dispatch(loginAction({ email, password }))
+        dispatch(loginAction({ email, password, deviceId }))
             .then(() => {
                 setEmail('')
                 setPassword('')

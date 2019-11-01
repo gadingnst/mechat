@@ -1,7 +1,9 @@
-import React, { useState, useEffect, u } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Avatar } from 'react-native-paper'
 import { GiftedChat } from 'react-native-gifted-chat'
+import Http from 'axios'
+import { NOTIFICATIONS_API_BASEURL } from 'react-native-dotenv'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 import Firebase from '../../Config/FirebaseSDK'
@@ -34,9 +36,23 @@ export default ({ navigation }) => {
                 avatar: chat.user.avatar
             }
         }
+
+        const data = {
+            sender: {
+                name: currentUser.name
+            },
+            receiver: {
+                device: user.deviceId
+            },
+            text: chat.text
+        }
+
         senderRef.push(chat)
         receiverRef().update({ ...currentUser })
         receiverRef('chat').push(chat)
+        Http.post(`${NOTIFICATIONS_API_BASEURL}/notification`, data)
+            .then(() => {})
+            .catch(() => {})
     }
 
     useEffect(() => {
