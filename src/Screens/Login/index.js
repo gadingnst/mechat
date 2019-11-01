@@ -82,7 +82,7 @@ export default ({ navigation }) => {
                             onChangeText={value => setPassword(value)}
                         />
                         <Button
-                            icon="ios-paper-plane"
+                            icon="ios-log-in"
                             mode="contained"
                             loading={loading}
                             disabled={loading}

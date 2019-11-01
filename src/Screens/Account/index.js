@@ -166,7 +166,7 @@ export default ({ navigation }) => {
                             <Button
                                 style={{ marginLeft: 8, marginTop: 15 }}
                                 color={Color.Danger}
-                                icon="ios-exit"
+                                icon="ios-log-out"
                                 mode="contained"
                                 loading={loading}
                                 disabled={loading}

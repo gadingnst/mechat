@@ -7,7 +7,7 @@ import {
     Image,
     TouchableOpacity
 } from 'react-native'
-import { Avatar, Card, List } from 'react-native-paper'
+import { Avatar, Card, List, Button } from 'react-native-paper'
 import Parallax from 'react-native-parallax-scroll-view'
 import ImageView from 'react-native-image-view'
 import Header from '../../Components/Header'
@@ -105,9 +105,11 @@ export default ({ navigation }) => {
                                 left={props => (
                                     <List.Icon {...props} icon="ios-call" />
                                 )}
-                                onPress={() => {
-                                    Linking.openURL(`tel:${user.number}`)
-                                }}
+                                onPress={() =>
+                                    user.number
+                                        ? Linking.openURL(`tel:${user.number}`)
+                                        : false
+                                }
                             />
                             <List.Item
                                 title="Email"
@@ -115,9 +117,13 @@ export default ({ navigation }) => {
                                 left={props => (
                                     <List.Icon {...props} icon="ios-mail" />
                                 )}
-                                onPress={() => {
-                                    Linking.openURL(`mailto:${user.email}`)
-                                }}
+                                onPress={() =>
+                                    user.email
+                                        ? Linking.openURL(
+                                              `mailto:${user.email}`
+                                          )
+                                        : false
+                                }
                             />
                             <List.Item
                                 title="Bio"
@@ -127,7 +133,48 @@ export default ({ navigation }) => {
                                 )}
                                 onPress={() => false}
                             />
+                            <List.Item
+                                title="Location"
+                                description={
+                                    user.location
+                                        ? user.location.address
+                                        : 'No location detected.'
+                                }
+                                left={props => (
+                                    <List.Icon {...props} icon="ios-navigate" />
+                                )}
+                                onPress={() =>
+                                    user.location
+                                        ? navigation.navigate('Maps', { user })
+                                        : false
+                                }
+                            />
                         </Card.Content>
+                        <Card.Actions
+                            style={{
+                                marginVertical: 10,
+                                flexDirection: 'row-reverse'
+                            }}
+                        >
+                            <Button
+                                style={{ marginHorizontal: 5 }}
+                                mode="contained"
+                                icon="ios-chatboxes"
+                                onPress={() =>
+                                    navigation.navigate('ChatRoom', { user })
+                                }
+                            >
+                                Chat
+                            </Button>
+                            <Button
+                                dark
+                                mode="outlined"
+                                icon="ios-close-circle"
+                                color={Color.Danger}
+                            >
+                                Remove Contact
+                            </Button>
+                        </Card.Actions>
                     </Card>
                 </View>
             </Parallax>

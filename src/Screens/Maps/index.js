@@ -21,7 +21,7 @@ const initialRegion = {
     longitudeDelta: LONGITUDE_DELTA
 }
 
-export default () => {
+export default ({ navigation }) => {
     const db = Firebase.database()
     const user = useSelector(({ auth }) => auth.user)
     const [friends, setFriends] = useState([])
@@ -178,11 +178,15 @@ export default () => {
                     />
                     {friends.map(item => (
                         <MapView.Marker
-                            flat
                             title={item.name.split(/\s+/)[0]}
                             description={item.location.address}
                             coordinate={item.location}
                             key={item.id}
+                            onCalloutPress={() => {
+                                navigation.navigate('UserProfile', {
+                                    user: item
+                                })
+                            }}
                         />
                     ))}
                 </MapView>

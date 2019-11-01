@@ -88,7 +88,7 @@ export default ({ navigation }) => {
                 backgroundColor={Color.Accent}
                 actions={[
                     {
-                        icon: 'ios-add-circle',
+                        icon: 'ios-person-add',
                         onPress: () => {
                             navigation.navigate('AddContact')
                         }
