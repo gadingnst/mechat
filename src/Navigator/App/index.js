@@ -8,6 +8,7 @@ import Contacts from '../../Screens/Contacts'
 import AddContact from '../../Screens/AddContact'
 import Maps from '../../Screens/Maps'
 import Account from '../../Screens/Account'
+import UpdateAccount from '../../Screens/UpdateAccount'
 import ChatRoom from '../../Screens/ChatRoom'
 import UserProfile from '../../Screens/UserProfile'
 import Icon from '../../Components/Icon'
@@ -83,7 +84,16 @@ export default createStackNavigator(
                     }
                 },
                 Account: {
-                    screen: Account,
+                    screen: createStackNavigator(
+                        {
+                            Account,
+                            UpdateAccount
+                        },
+                        {
+                            headerMode: 'none',
+                            initialRouteName: 'Account'
+                        }
+                    ),
                     navigationOptions: {
                         tabBarIcon: ({ tintColor }) => (
                             <Icon

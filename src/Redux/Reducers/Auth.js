@@ -6,6 +6,11 @@ const initial = {
 
 export default (state = initial, action) => {
     switch (action.type) {
+        case 'UPDATE_USER':
+            return {
+                ...state,
+                user: action.payload
+            }
         case 'LOGIN_USER_PENDING':
             return {
                 ...state,

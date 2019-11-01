@@ -23,6 +23,7 @@ const settings = {
 
 export default () => {
     OneSignal.init(ONESIGNAL_APP_ID)
+    OneSignal.inFocusDisplaying(0)
 
     useEffect(() => {
         SplashScreen.hide()

@@ -59,6 +59,11 @@ export const loginWithGoogle = () => ({
     })
 })
 
+export const updateUser = data => ({
+    type: 'UPDATE_USER',
+    payload: data
+})
+
 export const register = data => ({
     type: 'LOGIN_USER',
     payload: new Promise(async (resolve, reject) => {
