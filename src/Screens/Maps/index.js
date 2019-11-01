@@ -25,7 +25,7 @@ const initialRegion = {
 export default ({ navigation }) => {
     const db = Firebase.database()
     const user = useSelector(({ auth }) => auth.user)
-    const [friends, setFriends] = useState([])
+    const [persons, setPersons] = useState([])
     const [region, setRegion] = useState(initialRegion)
     const [currentLocation, setCurrentLocation] = useState(initialRegion)
     const [selectedFriend, setSelectedFriend] = useState({})
@@ -119,7 +119,7 @@ export default ({ navigation }) => {
                         item.location.hasOwnProperty('latitude') &&
                         item.location.hasOwnProperty('longitude')
                 )
-                setFriends(data)
+                setPersons(data)
             })
         Geolocation.getCurrentPosition(
             handleGeo.success,
@@ -152,7 +152,7 @@ export default ({ navigation }) => {
                                 onValueChange={onSelectedFriend}
                             >
                                 <Picker.Item label="Your Location" value={{}} />
-                                {friends.map(item => (
+                                {persons.map(item => (
                                     <Picker.Item
                                         key={item.id}
                                         label={item.name}
@@ -177,7 +177,7 @@ export default ({ navigation }) => {
                         description={currentLocation.address}
                         key={user.id}
                     />
-                    {friends.map(item => (
+                    {persons.map(item => (
                         <MapView.Marker
                             key={item.id}
                             title={item.name.split(/\s+/)[0]}
