@@ -41,10 +41,7 @@ export const login = data => ({
 
             resolve({
                 id: user.uid,
-                name: userData.name,
-                email: userData.email,
-                avatar: userData.avatar,
-                status: userData.status
+                ...userData
             })
         } catch (err) {
             reject(err)

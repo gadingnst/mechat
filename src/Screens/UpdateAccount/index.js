@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import {
-    View,
-    ScrollView,
-    StyleSheet,
-    TouchableOpacity,
-    Platform
-} from 'react-native'
+import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { TextInput, Button, Avatar } from 'react-native-paper'
 import ImagePicker from 'react-native-image-picker'
 import Toast from 'react-native-root-toast'
-// import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob'
 import Firebase from '../../Config/FirebaseSDK'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 import { updateUser } from '../../Redux/Actions/Auth'
 
-// const Blob = RNFetchBlob.polyfill.Blob
-// const fs = RNFetchBlob.fs
+const Blob = RNFetchBlob.polyfill.Blob
+const fs = RNFetchBlob.fs
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+window.Blob = Blob
 
 export default ({ navigation }) => {
     const user = navigation.getParam('user')
@@ -81,23 +77,19 @@ export default ({ navigation }) => {
 
             try {
                 if (avatar) {
-                    // const imageRef = Firebase.storage()
-                    //     .ref('/avatars')
-                    //     .child(user.id)
+                    const imageRef = Firebase.storage()
+                        .ref('/avatars')
+                        .child(user.id)
 
-                    // const mime = 'application/octet-stream'
-                    // const uploadUri =
-                    //     Platform.OS === 'ios'
-                    //         ? avatar.uri.replace('file://', '')
-                    //         : avatar.uri
+                    const mime = 'application/octet-stream'
 
-                    // let blob = await fs.readFile(uploadUri, 'base64')
-                    // blob = await Blob.build(blob, { type: `${mime};BASE64` })
-                    // await imageRef.put(blob, { contentType: mime })
-                    // blob.close()
-                    // data.avatar = imageRef.getDownloadURL()
-                    // console.log(data)
+                    let blob = await fs.readFile(avatar.uri, 'base64')
+                    blob = await Blob.build(blob, { type: `${mime};BASE64` })
+                    await imageRef.put(blob, { contentType: mime })
+                    data.avatar = await imageRef.getDownloadURL()
+                    blob.close()
                 }
+
                 const snapshot = (await db.ref('/contacts').once('value')).val()
 
                 const usersSnapshots = Object.keys(snapshot).map(contactsId => {
