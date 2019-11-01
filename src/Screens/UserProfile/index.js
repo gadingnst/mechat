@@ -157,7 +157,9 @@ export default ({ navigation }) => {
                             }}
                         >
                             <Button
+                                dark
                                 style={{ marginHorizontal: 5 }}
+                                color={Color.Accent}
                                 mode="contained"
                                 icon="ios-chatboxes"
                                 onPress={() =>
@@ -165,14 +167,6 @@ export default ({ navigation }) => {
                                 }
                             >
                                 Chat
-                            </Button>
-                            <Button
-                                dark
-                                mode="outlined"
-                                icon="ios-close-circle"
-                                color={Color.Danger}
-                            >
-                                Remove Contact
                             </Button>
                         </Card.Actions>
                     </Card>

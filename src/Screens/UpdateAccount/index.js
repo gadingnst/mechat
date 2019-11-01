@@ -20,7 +20,7 @@ export default ({ navigation }) => {
     const dispatch = useDispatch()
     const [name, setName] = useState(user.name || '')
     const [number, setNumber] = useState(user.number || '')
-    const [bio, setBio] = useState(user.bio || '')
+    const [bio, setBio] = useState(user.biodata || '')
     const [avatar, setAvatar] = useState(null)
     const [loading, showLoading] = useState(false)
 

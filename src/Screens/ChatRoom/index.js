@@ -70,7 +70,7 @@ export default ({ navigation }) => {
             <Header
                 title={user.name}
                 subtitle={user.status ? 'Active' : 'Inactive'}
-                backgroundColor={Color.Primary}
+                backgroundColor={Color.Accent}
                 back={() => navigation.goBack()}
                 onPress={() => navigation.navigate('UserProfile', { user })}
                 left={
