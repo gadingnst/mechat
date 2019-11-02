@@ -35,6 +35,14 @@ export default ({ navigation }) => {
                     }))
                 )
             })
+        return () => {
+            Firebase.database()
+                .ref(`/contacts/${user.id}`)
+                .off('value')
+            Firebase.database()
+                .ref('/users')
+                .off('value')
+        }
     }, [])
 
     const onFindUser = () => {

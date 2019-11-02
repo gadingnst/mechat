@@ -100,27 +100,25 @@ export default ({ navigation }) => {
     }
 
     useEffect(() => {
-        Firebase.database()
-            .ref(`/contacts/${user.id}`)
-            .on('value', snapshot => {
-                let data = snapshot.val()
-                data = Object.keys(data || {}).map(id => ({
-                    id,
-                    ...data[id],
-                    location:
-                        {
-                            ...data[id].location,
-                            latitudeDelta: LATITUDE_DELTA,
-                            longitudeDelta: LONGITUDE_DELTA
-                        } || {}
-                }))
-                data = data.filter(
-                    item =>
-                        item.location.hasOwnProperty('latitude') &&
-                        item.location.hasOwnProperty('longitude')
-                )
-                setPersons(data)
-            })
+        db.ref(`/contacts/${user.id}`).on('value', snapshot => {
+            let data = snapshot.val()
+            data = Object.keys(data || {}).map(id => ({
+                id,
+                ...data[id],
+                location:
+                    {
+                        ...data[id].location,
+                        latitudeDelta: LATITUDE_DELTA,
+                        longitudeDelta: LONGITUDE_DELTA
+                    } || {}
+            }))
+            data = data.filter(
+                item =>
+                    item.location.hasOwnProperty('latitude') &&
+                    item.location.hasOwnProperty('longitude')
+            )
+            setPersons(data)
+        })
         Geolocation.getCurrentPosition(
             handleGeo.success,
             handleGeo.error,
@@ -133,6 +131,7 @@ export default ({ navigation }) => {
         )
         return () => {
             Geolocation.clearWatch(geoWatchId)
+            db.ref(`/contacts/${user.id}`).off('value')
         }
     }, [])
 

@@ -74,6 +74,11 @@ export default ({ navigation }) => {
 
     useEffect(() => {
         getContacts()
+        return () => {
+            Firebase.database()
+                .ref(`/contacts/${user.id}`)
+                .off('value')
+        }
     }, [])
 
     return (
