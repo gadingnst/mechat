@@ -49,9 +49,13 @@ export default ({ navigation }) => {
                 .then(snapshot => {
                     let result = snapshot.val()
                     if (findUser.id !== user.id) {
-                        if (result.hasOwnProperty(findUser.id)) {
-                            setIsInContact(true)
-                        } else {
+                        try {
+                            if (result.hasOwnProperty(findUser.id)) {
+                                setIsInContact(true)
+                            } else {
+                                setIsInContact(false)
+                            }
+                        } catch (err) {
                             setIsInContact(false)
                         }
                         setFindUser(findUser)
