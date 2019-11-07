@@ -12,8 +12,11 @@ import { updateUser } from '../../Redux/Actions/Auth'
 
 const {
     fs,
-    polyfill: { Blob }
+    polyfill: { Blob, XMLHttpRequest }
 } = RNFetchBlob
+
+window.XMLHttpRequest = XMLHttpRequest
+window.Blob = Blob
 
 export default ({ navigation }) => {
     const user = navigation.getParam('user')
@@ -28,6 +31,9 @@ export default ({ navigation }) => {
         showLoading(true)
         const opts = {
             title: 'Select Avatar',
+            mediaType: 'photo',
+            maxWidth: 450,
+            maxHeight: 450,
             storageOptions: {
                 skipBackup: true,
                 path: 'images'
