@@ -5,13 +5,38 @@ import { GiftedChat } from 'react-native-gifted-chat'
 import Http from 'axios'
 import { NOTIFICATIONS_API_BASEURL } from 'react-native-dotenv'
 import Header from '../../Components/Header'
+import Loading from '../../Components/Loading'
 import Color from '../../Assets/Color'
 import Firebase from '../../Config/FirebaseSDK'
+
+const Chat = ({ loading, messages, onSend, user }) => {
+    if (loading) {
+        return (
+            <Loading
+                color={Color.Accent}
+                size="large"
+                text="Loading messages..."
+            />
+        )
+    }
+    return (
+        <GiftedChat
+            messages={messages}
+            onSend={onSend}
+            user={{
+                _id: user.id,
+                name: user.name,
+                avatar: user.avatar
+            }}
+        />
+    )
+}
 
 export default ({ navigation }) => {
     const user = navigation.getParam('user')
     const currentUser = useSelector(({ auth }) => auth.user)
     const [msg, setMsg] = useState([])
+    const [loading, showLoading] = useState(false)
 
     const senderRef = Firebase.database().ref(
         `/contacts/${currentUser.id}/${user.id}/chats`
@@ -56,7 +81,9 @@ export default ({ navigation }) => {
     }
 
     useEffect(() => {
+        showLoading(true)
         senderRef.on('child_added', snapshot => {
+            showLoading(false)
             const chat = snapshot.val()
             setMsg(prevMsg => GiftedChat.append(prevMsg, chat))
         })
@@ -83,14 +110,11 @@ export default ({ navigation }) => {
                     />
                 }
             />
-            <GiftedChat
+            <Chat
+                loading={loading}
                 messages={msg}
+                user={currentUser}
                 onSend={onSendChat}
-                user={{
-                    _id: currentUser.id,
-                    name: currentUser.name,
-                    avatar: currentUser.avatar
-                }}
             />
         </>
     )

@@ -4,16 +4,21 @@ import { View, ScrollView } from 'react-native'
 import { Avatar } from 'react-native-paper'
 import Header from '../../Components/Header'
 import UserList from '../../Components/UserList'
+import Loading from '../../Components/Loading'
 import Firebase from '../../Config/FirebaseSDK'
+import Color from '../../Assets/Color'
 
 export default ({ navigation }) => {
     const { user } = useSelector(state => state.auth)
     const [chats, setChats] = useState([])
+    const [loading, showLoading] = useState(false)
 
     useEffect(() => {
+        showLoading(true)
         Firebase.database()
             .ref(`/contacts/${user.id}`)
             .on('value', snapshot => {
+                showLoading(false)
                 let data = snapshot.val()
                 data = Object.keys(data || {}).map(id => {
                     let lastMsg = {}
@@ -64,6 +69,12 @@ export default ({ navigation }) => {
                         source={require('../../Assets/Images/AppIconSplash/icon.png')}
                     />
                 }
+            />
+            <Loading
+                loading={loading}
+                color={Color.Primary}
+                size="large"
+                text="Loading chats..."
             />
             <ScrollView>
                 <View style={{ padding: 5 }}>

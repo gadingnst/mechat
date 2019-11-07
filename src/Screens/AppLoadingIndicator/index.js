@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { StyleSheet, View, Text, ActivityIndicator } from 'react-native'
 import { NavigationActions, StackActions } from 'react-navigation'
+import Loading from '../../Components/Loading'
 import Color from '../../Assets/Color'
 
 export default ({ navigation }) => {
@@ -22,26 +22,5 @@ export default ({ navigation }) => {
         }, 1000)
     }, [isLoggedIn, navigation])
 
-    return (
-        <>
-            <View style={styles.container}>
-                <ActivityIndicator size="large" color={Color.Accent} />
-                <Text style={styles.text}>Please Wait...</Text>
-            </View>
-        </>
-    )
+    return <Loading color={Color.Accent} size="large" text="Please wait..." />
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    text: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: Color.Accent,
-        marginVertical: 15
-    }
-})

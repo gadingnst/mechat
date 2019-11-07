@@ -5,10 +5,11 @@ import { Searchbar } from 'react-native-paper'
 import { NavigationEvents } from 'react-navigation'
 import Header from '../../Components/Header'
 import UserList from '../../Components/UserList'
+import Loading from '../../Components/Loading'
 import Color from '../../Assets/Color'
 import Firebase from '../../Config/FirebaseSDK'
 
-const Contacts = ({ contacts, navigate = () => false }) => {
+const Contacts = ({ loading, contacts, navigate = () => false }) => {
     if (contacts.length > 0) {
         return contacts.map(item => (
             <UserList
@@ -22,7 +23,7 @@ const Contacts = ({ contacts, navigate = () => false }) => {
                 }}
             />
         ))
-    } else {
+    } else if (!loading) {
         return (
             <View
                 style={{
@@ -35,6 +36,7 @@ const Contacts = ({ contacts, navigate = () => false }) => {
             </View>
         )
     }
+    return false
 }
 
 export default ({ navigation }) => {
@@ -42,6 +44,7 @@ export default ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('')
     const [contacts, setContacts] = useState([])
     const [filteredContacts, setFilteredContacts] = useState(false)
+    const [loading, showLoading] = useState(false)
 
     const onSearchContacts = query => {
         setSearchQuery(query)
@@ -59,9 +62,11 @@ export default ({ navigation }) => {
     }
 
     const getContacts = () => {
+        showLoading(true)
         Firebase.database()
             .ref(`/contacts/${user.id}`)
             .on('value', snapshot => {
+                showLoading(false)
                 const data = snapshot.val()
                 setContacts(
                     Object.keys(data || {}).map(id => ({
@@ -107,9 +112,16 @@ export default ({ navigation }) => {
                     value={searchQuery}
                 />
             </View>
+            <Loading
+                loading={loading}
+                color={Color.Accent}
+                size="large"
+                text="Loading contacts..."
+            />
             <ScrollView>
                 <View style={{ padding: 5 }}>
                     <Contacts
+                        loading={loading}
                         contacts={filteredContacts || contacts}
                         navigate={navigation.navigate}
                     />

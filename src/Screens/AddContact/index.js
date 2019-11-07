@@ -17,6 +17,7 @@ import Color from '../../Assets/Color'
 export default ({ navigation }) => {
     const [loading, showLoading] = useState(false)
     const [isInContact, setIsInContact] = useState(false)
+    const [userAvailable, setUserAvailable] = useState(true)
     const [search, setSearch] = useState('')
     const [users, setUsers] = useState([])
     const [findUser, setFindUser] = useState({})
@@ -51,6 +52,7 @@ export default ({ navigation }) => {
             ({ email }) => email === search.toLowerCase().trim()
         )
         if (findUser) {
+            setUserAvailable(true)
             Firebase.database()
                 .ref(`/contacts/${user.id}`)
                 .once('value')
@@ -75,6 +77,7 @@ export default ({ navigation }) => {
         } else {
             setFindUser({})
             showLoading(false)
+            setUserAvailable(false)
         }
     }
 
@@ -118,6 +121,11 @@ export default ({ navigation }) => {
                     >
                         Find User
                     </Button>
+                    {userAvailable || (
+                        <Subheading style={{ alignSelf: 'center' }}>
+                            User not available.
+                        </Subheading>
+                    )}
                     {Object.keys(findUser).length < 1 || (
                         <Card elevation={5} style={{ marginVertical: 40 }}>
                             <Card.Content style={{ alignItems: 'center' }}>

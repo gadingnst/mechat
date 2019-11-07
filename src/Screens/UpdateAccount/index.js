@@ -10,10 +10,10 @@ import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 import { updateUser } from '../../Redux/Actions/Auth'
 
-const Blob = RNFetchBlob.polyfill.Blob
-const fs = RNFetchBlob.fs
-window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
-window.Blob = Blob
+const {
+    fs,
+    polyfill: { Blob }
+} = RNFetchBlob
 
 export default ({ navigation }) => {
     const user = navigation.getParam('user')
