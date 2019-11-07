@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux'
 import { StyleSheet, View, Picker, Text, Dimensions } from 'react-native'
 import { Card } from 'react-native-paper'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
-import Geolocation from 'react-native-geolocation-service'
+import Geolocation from '@react-native-community/geolocation'
 import { GOOGLE_MAP_API_KEY } from 'react-native-dotenv'
 import axios from 'axios'
-import Firebase from '../../Config/FirebaseSDK'
 import RandomColor from 'randomcolor'
+import Firebase from '../../Config/FirebaseSDK'
+import Color from '../../Assets/Color'
+import Toast from 'react-native-root-toast'
 
 const ASPECT_RATIO =
     Dimensions.get('window').width / Dimensions.get('window').height
@@ -44,7 +46,7 @@ export default ({ navigation }) => {
             .then(({ data }) => data.results[0].formatted_address)
 
     const handleGeo = {
-        success: async position => {
+        success: async (position, callback) => {
             const updates = {}
             const location = {
                 latitude: position.coords.latitude,
@@ -54,11 +56,8 @@ export default ({ navigation }) => {
                     position.coords.longitude
                 )
             }
-            setRegion({ ...region, ...location })
-            setCurrentLocation({ ...region, ...location })
 
             const snapshot = (await db.ref('/contacts').once('value')).val()
-
             const usersSnapshots = Object.keys(snapshot).map(contactsId => {
                 if (contactsId !== user.id) {
                     if (snapshot[contactsId].hasOwnProperty(user.id)) {
@@ -76,9 +75,15 @@ export default ({ navigation }) => {
                 })
 
             db.ref().update(updates)
+            callback({ ...region, ...location })
         },
         error: error => {
-            console.log(error)
+            Toast.show(`An error occured. ${error.message}`, {
+                backgroundColor: Color.Danger,
+                duration: Toast.durations.LONG,
+                position: Toast.positions.BOTTOM,
+                animation: true
+            })
         }
     }
 
@@ -100,6 +105,27 @@ export default ({ navigation }) => {
     }
 
     useEffect(() => {
+        Geolocation.getCurrentPosition(
+            position => {
+                handleGeo.success(position, region => {
+                    setTimeout(() => {
+                        setRegion(region)
+                        setCurrentLocation(region)
+                    }, 800)
+                })
+            },
+            handleGeo.error,
+            geoConfig
+        )
+        const geoWatchId = Geolocation.watchPosition(
+            position => {
+                handleGeo.success(position, region => {
+                    setCurrentLocation(region)
+                })
+            },
+            handleGeo.error,
+            geoConfig
+        )
         db.ref(`/contacts/${user.id}`).on('value', snapshot => {
             let data = snapshot.val()
             data = Object.keys(data || {}).map(id => ({
@@ -119,16 +145,6 @@ export default ({ navigation }) => {
             )
             setPersons(data)
         })
-        Geolocation.getCurrentPosition(
-            handleGeo.success,
-            handleGeo.error,
-            geoConfig
-        )
-        const geoWatchId = Geolocation.watchPosition(
-            handleGeo.success,
-            handleGeo.error,
-            geoConfig
-        )
         return () => {
             Geolocation.clearWatch(geoWatchId)
             db.ref(`/contacts/${user.id}`).off('value')
@@ -142,7 +158,7 @@ export default ({ navigation }) => {
                     <Card.Content>
                         <View>
                             <Text style={{ marginHorizontal: 8 }}>
-                                Select Friend Location:
+                                Select Location:
                             </Text>
                             <Picker
                                 selectedValue={selectedFriend}
@@ -165,10 +181,11 @@ export default ({ navigation }) => {
             </View>
             <View style={styles.mapContainer}>
                 <MapView
+                    showsUserLocation
                     provider={PROVIDER_GOOGLE}
                     style={styles.mapView}
                     region={region}
-                    showsUserLocation
+                    onRegionChangeComplete={setRegion}
                 >
                     <MapView.Marker
                         title="You"
@@ -179,7 +196,7 @@ export default ({ navigation }) => {
                     {persons.map(item => (
                         <MapView.Marker
                             key={item.id}
-                            title={item.name.split(/\s+/)[0]}
+                            title={item.name}
                             description={item.location.address}
                             coordinate={item.location}
                             pinColor={RandomColor({ luminosity: 'bright' })}
