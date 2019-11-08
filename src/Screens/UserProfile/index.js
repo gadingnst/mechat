@@ -201,6 +201,7 @@ export default ({ navigation }) => {
                             <List.Item
                                 title="Bio"
                                 description={user.biodata || 'No bio.'}
+                                descriptionNumberOfLines={10}
                                 left={props => (
                                     <List.Icon {...props} icon="ios-quote" />
                                 )}
@@ -208,6 +209,7 @@ export default ({ navigation }) => {
                             />
                             <List.Item
                                 title="Location"
+                                descriptionNumberOfLines={10}
                                 description={
                                     user.location
                                         ? user.location.address
@@ -216,11 +218,7 @@ export default ({ navigation }) => {
                                 left={props => (
                                     <List.Icon {...props} icon="ios-navigate" />
                                 )}
-                                onPress={() =>
-                                    user.location
-                                        ? navigation.navigate('Maps', { user })
-                                        : false
-                                }
+                                onPress={() => false}
                             />
                         </Card.Content>
                         <Card.Actions
@@ -266,7 +264,7 @@ export default ({ navigation }) => {
                                 {loading
                                     ? 'Loading'
                                     : isInContact
-                                    ? 'Delete Contact'
+                                    ? 'Remove Contact'
                                     : 'Add Contact'}{' '}
                             </Button>
                         </Card.Actions>

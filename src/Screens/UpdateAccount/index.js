@@ -76,9 +76,7 @@ export default ({ navigation }) => {
                 name,
                 number: number.length > 0 ? number : null,
                 biodata: bio.length > 0 ? bio : null,
-                avatar: `https://ui-avatars.com/api/?size=256&name=${name
-                    .trim()
-                    .replace(/\s+/, '+')}`
+                avatar: user.avatar
             }
 
             try {
@@ -131,7 +129,12 @@ export default ({ navigation }) => {
                 })
                 navigation.goBack()
             } catch (err) {
-                console.log(err)
+                Toast.show(`An error occured. ${err.message}`, {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.BOTTOM,
+                    backgroundColor: Color.Danger,
+                    animation: true
+                })
             }
         } else {
             Toast.show('Name must not be empty.', {
@@ -153,7 +156,7 @@ export default ({ navigation }) => {
     return (
         <>
             <Header
-                title="Edit Account"
+                title="Edit Profile"
                 backgroundColor={Color.Info}
                 back={() => navigation.goBack()}
             />
@@ -184,11 +187,7 @@ export default ({ navigation }) => {
                         <Avatar.Image
                             size={150}
                             style={styles.avatarPlaceholder}
-                            source={
-                                avatar
-                                    ? { uri: avatar.uri }
-                                    : require('../../Assets/Images/avatar_placeholder.jpg')
-                            }
+                            source={{ uri: avatar ? avatar.uri : user.avatar }}
                         />
                         <Avatar.Icon
                             icon="ios-camera"

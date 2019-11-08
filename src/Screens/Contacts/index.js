@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { View, Text, ScrollView } from 'react-native'
-import { Searchbar } from 'react-native-paper'
+import { View, ScrollView } from 'react-native'
+import { Searchbar, Button, Subheading } from 'react-native-paper'
 import { NavigationEvents } from 'react-navigation'
 import Header from '../../Components/Header'
 import UserList from '../../Components/UserList'
@@ -32,10 +32,20 @@ const Contacts = ({ loading, contacts, navigate = () => false }) => {
                 style={{
                     flex: 1,
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    marginTop: 30
                 }}
             >
-                <Text>No Contacts Available</Text>
+                <Subheading>No Contacts Available</Subheading>
+                <Button
+                    dark
+                    mode="contained"
+                    icon="ios-person"
+                    color={Color.Accent}
+                    onPress={() => navigate('AddContact')}
+                >
+                    Add new Contact
+                </Button>
             </View>
         )
     }

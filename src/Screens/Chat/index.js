@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { View, ScrollView } from 'react-native'
-import { Avatar } from 'react-native-paper'
+import { Avatar, Subheading, Button } from 'react-native-paper'
 import Header from '../../Components/Header'
 import UserList from '../../Components/UserList'
 import Loading from '../../Components/Loading'
@@ -78,16 +78,36 @@ export default ({ navigation }) => {
             />
             <ScrollView>
                 <View style={{ padding: 5 }}>
-                    {chats.map((item, i) => (
-                        <UserList
-                            key={item.id || i}
-                            user={item.user}
-                            navigate={() => {
-                                navigation.navigate('ChatRoom', item)
+                    {!chats.length && !loading ? (
+                        <View
+                            style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginTop: 30
                             }}
-                            subs={item.lastMsg.text}
-                        />
-                    ))}
+                        >
+                            <Subheading>No Chats Available</Subheading>
+                            <Button
+                                mode="contained"
+                                icon="ios-chatboxes"
+                                onPress={() => navigation.navigate('Contacts')}
+                            >
+                                Start chats from your contacts
+                            </Button>
+                        </View>
+                    ) : (
+                        chats.map((item, i) => (
+                            <UserList
+                                key={item.id || i}
+                                user={item.user}
+                                navigate={() => {
+                                    navigation.navigate('ChatRoom', item)
+                                }}
+                                subs={item.lastMsg.text}
+                            />
+                        ))
+                    )}
                 </View>
             </ScrollView>
         </>
