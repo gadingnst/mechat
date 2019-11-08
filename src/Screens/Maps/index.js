@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { StyleSheet, View, Picker, Text, Dimensions } from 'react-native'
+import {
+    StyleSheet,
+    View,
+    Picker,
+    Text,
+    Dimensions,
+    PermissionsAndroid
+} from 'react-native'
 import { Card } from 'react-native-paper'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
@@ -105,27 +112,50 @@ export default ({ navigation }) => {
     }
 
     useEffect(() => {
-        Geolocation.getCurrentPosition(
-            position => {
-                handleGeo.success(position, region => {
-                    setTimeout(() => {
-                        setRegion(region)
-                        setCurrentLocation(region)
-                    }, 800)
-                })
-            },
-            handleGeo.error,
-            geoConfig
+        let geoWatchId
+        PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
         )
-        const geoWatchId = Geolocation.watchPosition(
-            position => {
-                handleGeo.success(position, region => {
-                    setCurrentLocation(region)
+            .then(granted => {
+                if (granted) {
+                    Geolocation.getCurrentPosition(
+                        position => {
+                            handleGeo.success(position, region => {
+                                setTimeout(() => {
+                                    setRegion(region)
+                                    setCurrentLocation(region)
+                                }, 800)
+                            })
+                        },
+                        handleGeo.error,
+                        geoConfig
+                    )
+                    geoWatchId = Geolocation.watchPosition(
+                        position => {
+                            handleGeo.success(position, region => {
+                                setCurrentLocation(region)
+                            })
+                        },
+                        handleGeo.error,
+                        geoConfig
+                    )
+                } else {
+                    Toast.show('Access permission location denied.', {
+                        backgroundColor: Color.Warning,
+                        duration: Toast.durations.LONG,
+                        position: Toast.positions.BOTTOM,
+                        animation: true
+                    })
+                }
+            })
+            .catch(err => {
+                Toast.show(`An error occured. ${err.message}`, {
+                    backgroundColor: Color.Danger,
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.BOTTOM,
+                    animation: true
                 })
-            },
-            handleGeo.error,
-            geoConfig
-        )
+            })
         db.ref(`/contacts/${user.id}`).on('value', snapshot => {
             let data = snapshot.val()
             data = Object.keys(data || {}).map(id => ({
