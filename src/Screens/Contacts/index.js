@@ -10,6 +10,9 @@ import Color from '../../Assets/Color'
 import Firebase from '../../Config/FirebaseSDK'
 
 const Contacts = ({ loading, contacts, navigate = () => false }) => {
+    contacts = contacts.sort((a, b) =>
+        a.chats.length < b.chats.length ? 1 : -1
+    )
     if (contacts.length > 0) {
         return contacts.map(item => (
             <UserList
@@ -70,8 +73,11 @@ export default ({ navigation }) => {
                 const data = snapshot.val()
                 setContacts(
                     Object.keys(data || {}).map(id => ({
+                        ...data[id],
                         id,
-                        ...data[id]
+                        chats: data[id].hasOwnProperty('chats')
+                            ? Object.keys(data[id].chats)
+                            : []
                     }))
                 )
             })

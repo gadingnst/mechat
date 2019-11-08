@@ -13,6 +13,7 @@ import { NavigationEvents } from 'react-navigation'
 import Parallax from 'react-native-parallax-scroll-view'
 import ImageView from 'react-native-image-view'
 import Toast from 'react-native-root-toast'
+import { ConfirmDialog } from 'react-native-simple-dialogs'
 import Firebase from '../../Config/FirebaseSDK'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
@@ -24,6 +25,7 @@ export default ({ navigation }) => {
     const [modal, showModal] = useState(false)
     const [isInContact, setIsInContact] = useState(false)
     const [loading, showLoading] = useState(true)
+    const [confirm, showConfirm] = useState(false)
     const images = [{ title: user.name, source: { uri: user.avatar } }]
 
     const onFocus = () => {
@@ -58,6 +60,7 @@ export default ({ navigation }) => {
     }
 
     const removeContact = () => {
+        showConfirm(false)
         showLoading(true)
         Firebase.database()
             .ref(`/contacts/${authUser.id}/${user.id}`)
@@ -77,6 +80,20 @@ export default ({ navigation }) => {
     return (
         <>
             <NavigationEvents onDidFocus={onFocus} />
+            <ConfirmDialog
+                title="Remove Contact"
+                message="Are you sure want to remove this user from your contacts?"
+                visible={confirm}
+                onTouchOutside={() => showConfirm(false)}
+                positiveButton={{
+                    title: 'Remove Contact',
+                    onPress: removeContact
+                }}
+                negativeButton={{
+                    title: 'Cancel',
+                    onPress: () => showConfirm(false)
+                }}
+            />
             <ImageView
                 isVisible={modal}
                 animationType="fade"
@@ -241,7 +258,9 @@ export default ({ navigation }) => {
                                     isInContact ? Color.Danger : Color.Accent
                                 }
                                 onPress={() =>
-                                    isInContact ? removeContact() : addContact()
+                                    isInContact
+                                        ? showConfirm(true)
+                                        : addContact()
                                 }
                             >
                                 {loading
