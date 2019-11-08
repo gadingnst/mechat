@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import {
     StyleSheet,
     Linking,
@@ -8,19 +9,74 @@ import {
     TouchableOpacity
 } from 'react-native'
 import { Avatar, Card, List, Button } from 'react-native-paper'
+import { NavigationEvents } from 'react-navigation'
 import Parallax from 'react-native-parallax-scroll-view'
 import ImageView from 'react-native-image-view'
+import Toast from 'react-native-root-toast'
+import Firebase from '../../Config/FirebaseSDK'
 import Header from '../../Components/Header'
 import Color from '../../Assets/Color'
 
 export default ({ navigation }) => {
     const user = navigation.getParam('user')
+    const authUser = useSelector(({ auth }) => auth.user)
     const [headerShouldVisible, setHeaderShouldVisible] = useState(false)
     const [modal, showModal] = useState(false)
+    const [isInContact, setIsInContact] = useState(false)
+    const [loading, showLoading] = useState(true)
     const images = [{ title: user.name, source: { uri: user.avatar } }]
+
+    const onFocus = () => {
+        Firebase.database()
+            .ref(`/contacts/${authUser.id}`)
+            .once('value')
+            .then(snapshot => {
+                let result = snapshot.val()
+                if (result.hasOwnProperty(user.id)) {
+                    setIsInContact(true)
+                } else {
+                    setIsInContact(false)
+                }
+                showLoading(false)
+            })
+    }
+
+    const addContact = () => {
+        showLoading(true)
+        Firebase.database()
+            .ref(`/contacts/${authUser.id}/${user.id}`)
+            .set({ ...user })
+            .then(() => {
+                showLoading(false)
+                Toast.show(`${user.name} added to your contact.`, {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.BOTTOM,
+                    animation: true
+                })
+                navigation.navigate('Contacts', { contactUpdated: true })
+            })
+    }
+
+    const removeContact = () => {
+        showLoading(true)
+        Firebase.database()
+            .ref(`/contacts/${authUser.id}/${user.id}`)
+            .set(null)
+            .then(() => {
+                showLoading(false)
+                Toast.show(`${user.name} removed from your contact.`, {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.BOTTOM,
+                    backgroundColor: Color.Danger,
+                    animation: true
+                })
+                navigation.navigate('Contacts', { contactUpdated: true })
+            })
+    }
 
     return (
         <>
+            <NavigationEvents onDidFocus={onFocus} />
             <ImageView
                 isVisible={modal}
                 animationType="fade"
@@ -162,11 +218,37 @@ export default ({ navigation }) => {
                                 color={Color.Accent}
                                 mode="contained"
                                 icon="ios-chatboxes"
+                                disabled={loading || !isInContact}
+                                loading={loading}
                                 onPress={() =>
                                     navigation.navigate('ChatRoom', { user })
                                 }
                             >
                                 Chat
+                            </Button>
+                            <Button
+                                dark
+                                style={{ marginHorizontal: 5 }}
+                                loading={loading}
+                                disabled={loading}
+                                mode="outlined"
+                                icon={
+                                    isInContact
+                                        ? 'ios-close-circle'
+                                        : 'ios-add-circle'
+                                }
+                                color={
+                                    isInContact ? Color.Danger : Color.Accent
+                                }
+                                onPress={() =>
+                                    isInContact ? removeContact() : addContact()
+                                }
+                            >
+                                {loading
+                                    ? 'Loading'
+                                    : isInContact
+                                    ? 'Delete Contact'
+                                    : 'Add Contact'}{' '}
                             </Button>
                         </Card.Actions>
                     </Card>

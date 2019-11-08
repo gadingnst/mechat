@@ -8,7 +8,7 @@ import {
     Dimensions,
     PermissionsAndroid
 } from 'react-native'
-import { Card } from 'react-native-paper'
+import { Card, Button } from 'react-native-paper'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
 import { GOOGLE_MAP_API_KEY } from 'react-native-dotenv'
@@ -111,6 +111,43 @@ export default ({ navigation }) => {
         }
     }
 
+    const parseUser = snapshot => {
+        let data = snapshot.val()
+        data = Object.keys(data || {}).map(id => ({
+            id,
+            ...data[id],
+            location:
+                {
+                    ...data[id].location,
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA
+                } || {}
+        }))
+        return data.filter(
+            item =>
+                item.location.hasOwnProperty('latitude') &&
+                item.location.hasOwnProperty('longitude')
+        )
+    }
+
+    const refresh = () => {
+        db.ref(`/contacts/${user.id}`).once('value', snapshot => {
+            setPersons(parseUser(snapshot))
+        })
+        Geolocation.getCurrentPosition(
+            position => {
+                handleGeo.success(position, region => {
+                    setTimeout(() => {
+                        setRegion(region)
+                        setCurrentLocation(region)
+                    }, 800)
+                })
+            },
+            handleGeo.error,
+            geoConfig
+        )
+    }
+
     useEffect(() => {
         let geoWatchId
         PermissionsAndroid.request(
@@ -157,23 +194,7 @@ export default ({ navigation }) => {
                 })
             })
         db.ref(`/contacts/${user.id}`).on('value', snapshot => {
-            let data = snapshot.val()
-            data = Object.keys(data || {}).map(id => ({
-                id,
-                ...data[id],
-                location:
-                    {
-                        ...data[id].location,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA
-                    } || {}
-            }))
-            data = data.filter(
-                item =>
-                    item.location.hasOwnProperty('latitude') &&
-                    item.location.hasOwnProperty('longitude')
-            )
-            setPersons(data)
+            setPersons(parseUser(snapshot))
         })
         return () => {
             Geolocation.clearWatch(geoWatchId)
@@ -183,32 +204,6 @@ export default ({ navigation }) => {
 
     return (
         <>
-            <View style={{ padding: 10 }}>
-                <Card style={{ zIndex: 1 }}>
-                    <Card.Content>
-                        <View>
-                            <Text style={{ marginHorizontal: 8 }}>
-                                Select Location:
-                            </Text>
-                            <Picker
-                                selectedValue={selectedFriend}
-                                style={{ width: '100%' }}
-                                mode="dropdown"
-                                onValueChange={onSelectedFriend}
-                            >
-                                <Picker.Item label="Your Location" value={{}} />
-                                {persons.map(item => (
-                                    <Picker.Item
-                                        key={item.id}
-                                        label={item.name}
-                                        value={item}
-                                    />
-                                ))}
-                            </Picker>
-                        </View>
-                    </Card.Content>
-                </Card>
-            </View>
             <View style={styles.mapContainer}>
                 <MapView
                     showsUserLocation
@@ -238,6 +233,42 @@ export default ({ navigation }) => {
                         />
                     ))}
                 </MapView>
+            </View>
+            <View style={{ padding: 10 }}>
+                <Card style={{ zIndex: 1 }}>
+                    <Card.Content>
+                        <View>
+                            <Text style={{ marginHorizontal: 8 }}>
+                                Select Location:
+                            </Text>
+                            <Picker
+                                selectedValue={selectedFriend}
+                                style={{ width: '100%' }}
+                                mode="dropdown"
+                                onValueChange={onSelectedFriend}
+                            >
+                                <Picker.Item label="Your Location" value={{}} />
+                                {persons.map(item => (
+                                    <Picker.Item
+                                        key={item.id}
+                                        label={item.name}
+                                        value={item}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
+                        <Button
+                            dark
+                            mode="contained"
+                            icon="ios-refresh"
+                            color={Color.Success}
+                            style={{ alignSelf: 'flex-end' }}
+                            onPress={refresh}
+                        >
+                            Refresh
+                        </Button>
+                    </Card.Content>
+                </Card>
             </View>
         </>
     )

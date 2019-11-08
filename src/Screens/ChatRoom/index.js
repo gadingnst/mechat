@@ -75,15 +75,15 @@ export default ({ navigation }) => {
         senderRef.push(chat)
         receiverRef().update({ ...currentUser })
         receiverRef('chat').push(chat)
-        Http.post(`${NOTIFICATIONS_API_BASEURL}/notification`, data)
+        Http.post(NOTIFICATIONS_API_BASEURL, data)
             .then(() => {})
             .catch(() => {})
     }
 
     useEffect(() => {
         showLoading(true)
+        senderRef.once('value', showLoading(false))
         senderRef.on('child_added', snapshot => {
-            showLoading(false)
             const chat = snapshot.val()
             setMsg(prevMsg => GiftedChat.append(prevMsg, chat))
         })
