@@ -5891,10 +5891,10 @@ react-native-image-picker@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-1.1.0.tgz#c2a0523886edb4cf2cdc008ad0a71433142a4d53"
   integrity sha512-/KjHf4NNAjl6XM7FQuqvGDz1wB9sRdLf86+2yksLW/QTRR7CitX4TLCM8ZF9CX6Y0MsCTndkZia3zWE+nt/GiA==
 
-react-native-image-view@^2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/react-native-image-view/-/react-native-image-view-2.1.8.tgz#3cca23117400523c18013593e8bd08984dd0f953"
-  integrity sha512-x2jZBMA/HeNP8FhBosGKlCIKt0JQ0vYzgzqmZj5dHrjtU2ZruEsSiLH+VIe+CgGG1FiROFoYytso8CUdQSsUcw==
+react-native-image-view@2.1.9:
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/react-native-image-view/-/react-native-image-view-2.1.9.tgz#635306360c42ad2479f364161c47d2557f9240fd"
+  integrity sha512-+DA/+tLM7KHaLs41Hdd+m5UpGX2qtEdMamMZCsXCsJ5J6RwWrqBXQrGVB9Op7dIkZW2DDRVKZTP/FuSNEGtzJg==
 
 react-native-iphone-x-helper@^1.2.0:
   version "1.2.1"
