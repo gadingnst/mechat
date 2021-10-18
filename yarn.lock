@@ -5917,10 +5917,10 @@ react-native-maps@~0.25.0:
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.25.0.tgz#81bc51eb50e33811a9e1c345cc48869413ead67d"
   integrity sha512-PFJuW1pt+HnnnN0m0OGk29RSvICFVkK/DScX6cUk0SuCSN2DAHx0y6y57lZyYXcYqU4J4usNpfxgp/ccjASDiw==
 
-react-native-onesignal@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-3.5.0.tgz#7f4ab2fae32c52fc1a5f34efdba6bbb53d04e6bb"
-  integrity sha512-Ww2d1na7SOpZ0DEVb+8BGpTt5Ty0Nuak/YqjY3YCauHFBdNOdI7Cz5CtSWLJMjKiyniJmWWHkvLu6HDE9zGZng==
+react-native-onesignal@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-4.3.1.tgz#c6ec7b7f34100e2330ba2772d28ee7134da344cc"
+  integrity sha512-Clcsflp8aWoz29F2J0B+u3GCtw0Yyzx5sSRSsPETSRL9sPmawjShFa/cxtIB1D3tB5I6lvvIpQxYKbpuL5wGJQ==
   dependencies:
     invariant "^2.2.2"
 
